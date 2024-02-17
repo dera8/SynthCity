@@ -1,7 +1,31 @@
 import pandas as pd
 
-# Leggi il file CSV
+# Funzione per estrarre gli ID dei TAZ dal file XML
+def extract_taz_ids_from_xml(xml_file):
+    taz_ids = []
+    tree = ET.parse(xml_file)
+    root = tree.getroot()
+    for taz in root.iter('taz'):
+        taz_id = taz.attrib.get('id')  # Rimuovi le virgolette dagli ID
+        taz_ids.append(taz_id)
+    return taz_ids
+
+# Leggi il file CSV della matrice OD
 data = pd.read_csv("matriceod_persone_viaggi.csv", delimiter=';')
+
+# Converti la colonna NumViaggi da float a interi
+data['NumViaggi'] = data['NumViaggi'].str.replace(',', '.').astype(float).astype(int)
+
+# Leggi il file XML dei TAZ e ottieni gli ID dei TAZ
+taz_ids = extract_taz_ids_from_xml("districts.taz.xml")
+# Filtra le righe del DataFrame che contengono solo ID dei TAZ presenti nel file XML
+filtered_data = data[data['ORIG_COD_ZONA'].astype(str).isin(taz_ids) & data['DEST_COD_ZONA'].astype(str).isin(taz_ids)]
+filtered_data
+# Salva la matrice OD filtrata
+filtered_data.to_csv("matriceod_persone_viaggi_filtrata.csv", index=False)
+
+# Leggi il file CSV
+data = pd.read_csv("matriceod_persone_viaggi_filtrata.csv", delimiter=';')
 
 # Converti la colonna NumViaggi da float a interi
 data['NumViaggi'] = data['NumViaggi'].str.replace(',', '.').astype(float).astype(int)
