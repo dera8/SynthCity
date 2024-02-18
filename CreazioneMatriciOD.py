@@ -24,21 +24,23 @@ filtered_data
 # Salva la matrice OD filtrata
 filtered_data.to_csv("matriceod_persone_viaggi_filtrata.csv", index=False)
 
+import pandas as pd
+
 # Leggi il file CSV
-data = pd.read_csv("matriceod_persone_viaggi_filtrata.csv", delimiter=';')
+data = pd.read_csv("matriceod_persone_viaggi_filtrata.csv", delimiter=',')
 
 # Converti la colonna NumViaggi da float a interi
-data['NumViaggi'] = data['NumViaggi'].str.replace(',', '.').astype(float).astype(int)
+data['NumViaggi'] = data['NumViaggi'].astype(int)
 
 # Mappa i valori di mezzo aggregato secondo le specifiche
 mezzo_mapping = {
-    'AUTO': ['AUTO', 'Altro_mezzo_privato', 'Altro'],
+    'AUTO': ['AUTO'],
     'BICI': ['BICI'],
     'FURGONE': ['FURGONE'],
     'MOTO': ['MOTO'],
     'PIEDI': ['PIEDI'],
     'TPL FERRO': ['TPL FERRO'],
-    'TPL GOMMA': ['TPL GOMMA', 'Altro_mezzo_pubblico']
+    'TPL GOMMA': ['TPL GOMMA']
 }
 
 # Applica la mappatura al DataFrame
@@ -62,11 +64,11 @@ def create_od_matrix(df, filename, from_time, to_time):
         # Intestazione
         file.write(f'$OR;D2\n* From-Time To-Time\n{from_time} {to_time}\n*Factor\n1.00\n* some\n* additional\n* comments\n')
         
+        # Somma dei viaggi per ogni coppia origine-destinazione
+        sum_viaggi = df.groupby(['ORIG_COD_ZONA', 'DEST_COD_ZONA'])['NumViaggi'].sum()
+        
         # Dati della matrice
-        for _, row in df.iterrows():
-            origine = row['ORIG_COD_ZONA']
-            destinazione = row['DEST_COD_ZONA']
-            num_viaggi = row['NumViaggi']
+        for (origine, destinazione), num_viaggi in sum_viaggi.items():
             file.write(f"{origine:>4} {destinazione:>4} {num_viaggi:>4}\n")
 
 # Raggruppa i dati per fascia oraria e mezzo aggregato
@@ -75,4 +77,4 @@ grouped_data = data.groupby(['FASCIA_ORARIA_VIAGGIO', 'MEZZO_aggregato'])
 # Crea la matrice OD per ciascuna combinazione di intervallo di tempo e mezzo aggregato
 for (fascia_oraria, mezzo_aggregato), df in grouped_data:
     intervallo = get_time_interval(fascia_oraria)
-    create_od_matrix(df, f"matrice_OD_{mezzo_aggregato}_{fascia_oraria}.od", intervallo['from_time'], intervallo['to_time'])
+    create_od_matrix(df, f"{mezzo_aggregato}_{fascia_oraria}.od", intervallo['from_time'], intervallo['to_time'])
