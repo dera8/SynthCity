@@ -24,6 +24,15 @@ These instructions will help you set up and run the traffic simulations on your 
 - **Python:** Python 3.x is required to run the supplementary scripts.
 - **Git:** To clone this repository.
 
+### Installation
+
+1. **Clone the repository:**
+
+    ```sh
+    git clone https://github.com/yourusername/SUMOSim.git
+    cd SUMOSim
+    ```
+
 ## Usage
 
 ### Dataset Description
@@ -56,7 +65,6 @@ The scenario configuration file (`sumo_config.xml`) is used to set up the simula
     </input> 
 
     <output>  
-        <tripinfo-output value="trips_dayyear.out.xml"/> 
         <stop-output value="stops_dayyear.out.xml"/>
         <edgedata-output value="edge_dayyear.xml"/>
     </output> 
@@ -75,7 +83,7 @@ The scenario configuration file (`sumo_config.xml`) is used to set up the simula
     </mesoscopic>  
 
 </configuration>
-
+```
 
 ### Simulation Execution
 Prepare the simulation:
@@ -84,14 +92,22 @@ Ensure all input files are in place and correctly referenced in the configuratio
 
 Run the simulation:
 
-```sh
-sumo -c cfg.xml or right-click on the file.
+```
+sumo -c cfg.xml 
+```
 
-Analyze the output:
+or right-click on the file.
 
-trips_8april.out.xml contains detailed trip information.
-stops_8april.out.xml contains data on stops made by public transport.
-edge_8april.xml provides edge-based traffic data.
+### Analyze the output:
+
+stops_daydate.out.xml contains data on stops made by public transport.
+edge_daydate.xml provides edge-based traffic data.
 
 
+## License
+
+
+### Explanation
+
+This project is licensed under the MIT License - see the LICENSE file for details.
 
