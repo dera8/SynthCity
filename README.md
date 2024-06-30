@@ -100,8 +100,8 @@ or right-click on the file.
 
 ### Analyze the output:
 
-stops_daydate.out.xml contains data on stops made by public transport.
-edge_daydate.xml provides edge-based traffic data.
+- stops_daydate.out.xml contains data on stops made by public transport.
+- edge_daydate.xml provides edge-based traffic data.
 
 
 ## License
