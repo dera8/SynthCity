@@ -7,10 +7,9 @@ This project focuses on enhancing urban mobility analysis through synthetic traf
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
 - [Usage](#usage)
-  - [Dataset Description](#dataset-description)
+  - [Scenario Files Description](#dataset-description)
   - [Scenario Configuration](#scenario-configuration)
   - [Simulation Execution](#simulation-execution)
-- [Results](#results)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -35,7 +34,7 @@ These instructions will help you set up and run the traffic simulations on your 
 
 ## Usage
 
-### Scenario Description
+### Scenario Files Description
 
 The dataset is created with the following input files:
 
@@ -100,8 +99,17 @@ or right-click on the file.
 
 ### Analyze the output:
 
-- stops_daydate.out.xml contains data on stops made by public transport.
-- edge_daydate.xml provides edge-based traffic data.
+stops_daydate.out.xml contains data on stops made by public transport.
+edge_daydate.xml provides edge-based traffic data.
+
+## Contributing
+
+## License
+
+
+### Explanation
+
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 
 ## License
