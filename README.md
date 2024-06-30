@@ -35,9 +35,9 @@ These instructions will help you set up and run the traffic simulations on your 
 
 ## Usage
 
-### Dataset Description
+### Scenario Description
 
-The dataset is created with the following files:
+The dataset is created with the following input files:
 
 - **Network File:** `osm.net.xml` - The road network of the city.
 - **Route Files:** 
