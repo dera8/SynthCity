@@ -106,8 +106,5 @@ or right-click on the file.
 
 ## License
 
-
-### Explanation
-
 This project is licensed under the MIT License - see the LICENSE file for details.
 
