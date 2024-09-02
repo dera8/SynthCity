@@ -90,10 +90,10 @@ class SimulationApp:
         self.gtfs_label = tk.Label(frame, text="GTFS Zip File:")
         self.gtfs_label.grid(row=1, column=0, sticky='w', padx=5)
 
-        self.gtfs_entry = tk.Entry(frame, width=50)
-        self.gtfs_entry.grid(row=1, column=1, padx=5)
+        self.gtfs_entry_main = tk.Entry(frame, width=50)
+        self.gtfs_entry_main.grid(row=1, column=1, padx=5)
 
-        self.load_gtfs_button = tk.Button(frame, text="Browse", command=self.load_gtfs_file)
+        self.load_gtfs_button = tk.Button(frame, text="Browse", command=self.load_gtfs_file_main)
         self.load_gtfs_button.grid(row=1, column=2, padx=5)
 
     def create_action_buttons(self):
@@ -141,12 +141,12 @@ class SimulationApp:
         else:
             self.output_text.insert(tk.END, "No OD matrix file selected.\n")
             
-    def load_gtfs_file(self):
+    def load_gtfs_file_main(self):
         """Load GTFS file and update the entry field."""
         self.gtfs_file = filedialog.askopenfilename(title="Select GTFS Zip File", filetypes=[("Zip files", "*.zip")])
         if self.gtfs_file:
-            self.gtfs_entry.delete(0, tk.END)
-            self.gtfs_entry.insert(0, self.gtfs_file)
+            self.gtfs_entry_main.delete(0, tk.END)
+            self.gtfs_entry_main.insert(0, self.gtfs_file)
             self.output_text.insert(tk.END, f"Loaded GTFS File: {self.gtfs_file}\n")
         else:
             self.output_text.insert(tk.END, "No GTFS file selected.\n")
@@ -393,9 +393,9 @@ class SimulationApp:
         Label(synth_window, text="GTFS Directory:").pack(pady=5)
         gtfs_frame = tk.Frame(synth_window)
         gtfs_frame.pack(pady=5)
-        self.gtfs_entry = Entry(gtfs_frame, width=60)
-        self.gtfs_entry.pack(side=tk.LEFT)
-        Button(gtfs_frame, text="Browse", command=self.load_gtfs_directory).pack(side=tk.LEFT, padx=5)
+        self.gtfs_entry_synth = Entry(gtfs_frame, width=60)
+        self.gtfs_entry_synth.pack(side=tk.LEFT)
+        Button(gtfs_frame, text="Browse", command=self.load_gtfs_directory_synth).pack(side=tk.LEFT, padx=5)
 
         # Custom GTFS Stops File
         Label(synth_window, text="Custom GTFS Stops File:").pack(pady=5)
@@ -420,12 +420,15 @@ class SimulationApp:
             self.stopout_entry.delete(0, tk.END)
             self.stopout_entry.insert(0, stopout_file)
 
-    def load_gtfs_directory(self):
-        """Load the GTFS directory and display the path in the entry."""
-        gtfs_path = self.file_handler.load_gtfs_directory()
+    def load_gtfs_directory_synth(self):
+        """Load the GTFS directory and update the entry field in the Generate Synthetic Dataset window."""
+        gtfs_path = filedialog.askdirectory(title="Select GTFS Directory")
         if gtfs_path:
-            self.gtfs_entry.delete(0, tk.END)
-            self.gtfs_entry.insert(0, gtfs_path)
+            self.gtfs_entry_synth.delete(0, tk.END)
+            self.gtfs_entry_synth.insert(0, gtfs_path)
+        else:
+            # Handle case where no directory is selected
+            pass
 
     def load_custom_gtfs_stops_file(self):
         """Load the custom GTFS stops file and display the path in the entry."""
@@ -571,7 +574,7 @@ class SimulationApp:
         """Open a window for generating the edge dataset."""
         edge_window = Toplevel(self.master)
         edge_window.title("Generate Edge Dataset")
-        edge_window.geometry("600x500")
+        edge_window.geometry("600x600")
 
         # Entry for the Edge XML file path
         Label(edge_window, text="Edge XML File:").pack(pady=5)
@@ -673,10 +676,16 @@ class FileHandler:
         file_path = filedialog.askopenfilename(title="Select Stop Output File", filetypes=[("CSV files", "*.csv"), ("All files", "*.*")])
         return file_path if file_path else None
 
-    def load_gtfs_directory(self):
-        """Load the GTFS directory."""
-        directory_path = filedialog.askdirectory(title="Select GTFS Directory")
-        return directory_path if directory_path else None
+    def load_gtfs_file_main(self):
+        """Load GTFS zip file in the Main GUI and update the entry field."""
+        self.gtfs_file = filedialog.askopenfilename(title="Select GTFS Zip File", filetypes=[("Zip files", "*.zip")])
+        if self.gtfs_file:
+            self.gtfs_entry_main.delete(0, tk.END)
+            self.gtfs_entry_main.insert(0, self.gtfs_file)
+            # Output feedback can be managed separately if needed
+        else:
+            # Handle case where no file is selected
+            pass
 
     def load_custom_gtfs_stops_file(self):
         """Load the custom GTFS stops file."""
