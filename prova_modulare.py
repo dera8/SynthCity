@@ -4,6 +4,8 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, ttk, simpledialog
 from tkcalendar import Calendar
 from tkinter import Tk, Label, Entry, Button, Toplevel
+from tkinter import StringVar, Listbox, MULTIPLE
+
 import pandas as pd
 import numpy as np
 import xml.etree.ElementTree as ET
@@ -112,10 +114,11 @@ class SimulationApp:
         self.modify_gtfs_button = tk.Button(action_frame, text="Modify GTFS", command=self.modify_gtfs)
         self.modify_gtfs_button.grid(row=0, column=4, padx=5)
         
-        self.synth_stop_button =tk.Button(self.master, text="Generate Synthetic Dataset", command=self.generate_synthetic_dataset).pack(pady=10)  
+        self.synth_stop_button =tk.Button(self.master, text="Generate PT Stops Dataset", command=self.generate_synthetic_dataset).pack(pady=10)  
         
-        self.synth_edge_button = tk.Button(self.master, text="Generate Edge Dataset", command=self.open_generate_dataset_window).pack(pady=50)
+        self.synth_edge_button = tk.Button(self.master, text="Generate Edge Dataset", command=self.open_generate_dataset_window).pack(pady=10)
 
+        self.trips_stop_button = tk.Button(self.master, text="Generate Trips Dataset", command=self.open_trips_xml_window).pack(pady=10)
 
     def load_network_file(self):
         """Load network file, update entry field, and populate road list."""
@@ -232,7 +235,8 @@ class SimulationApp:
 
             self.data_processor.add_road_closure(edges, selected_road_names, begin_seconds, end_seconds)
             xml_element = self.data_processor.generate_closure_xml(self.data_processor.edges_closures)
-            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            #timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")  # Correct usage of datetime
             output_filename = f'road_closures_{timestamp}.xml'
             if self.file_handler.save_xml_file(xml_element, output_filename):
                 self.output_text.insert(tk.END, f"XML file '{output_filename}' has been generated.\n")
@@ -378,7 +382,7 @@ class SimulationApp:
     def generate_synthetic_dataset(self):
         """Open a window for generating the synthetic dataset."""
         synth_window = Toplevel(self.master)
-        synth_window.title("Generate Synthetic Dataset")
+        synth_window.title("Generate PT Stops Dataset")
         synth_window.geometry("600x600")
 
         # Stop Output File
@@ -398,7 +402,7 @@ class SimulationApp:
         Button(gtfs_frame, text="Browse", command=self.load_gtfs_directory_synth).pack(side=tk.LEFT, padx=5)
 
         # Custom GTFS Stops File
-        Label(synth_window, text="Custom GTFS Stops File:").pack(pady=5)
+        Label(synth_window, text="Simulated GTFS Stops File:").pack(pady=5)
         custom_gtfs_frame = tk.Frame(synth_window)
         custom_gtfs_frame.pack(pady=5)
         self.custom_gtfs_entry = Entry(custom_gtfs_frame, width=60)
@@ -628,6 +632,82 @@ class SimulationApp:
 
         self.data_processor.extract_data_from_xml(edge_xml_filename, taz_xml_filename, csv_filename, date_str)
 
+    def open_trips_xml_window(self):
+        """Open a window to load files and process trips XML data."""
+        
+        # Create a new window
+        trips_window = Toplevel(self.master)
+        trips_window.title("Process Trips XML")
+        trips_window.geometry("600x600")
+
+        # Load Trips XML File
+        Label(trips_window, text="Trips XML File:").pack(pady=5)
+        trips_frame = tk.Frame(trips_window)
+        trips_frame.pack(pady=5)
+        self.trips_entry = Entry(trips_frame, width=60)
+        self.trips_entry.pack(side=tk.LEFT)
+        Button(trips_frame, text="Browse", command=self.load_trips_xml_file).pack(side=tk.LEFT, padx=5)
+
+        # Button to retrieve unique types and vTypes
+        Button(trips_window, text="Retrieve Unique Types and vTypes", command=self.retrieve_unique_values).pack(pady=10)
+
+        # Listbox for displaying and selecting unique values (Multiple Selection)
+        Label(trips_window, text="Select types or vTypes to include in CSV:").pack(pady=5)
+        self.unique_values_listbox = Listbox(trips_window, selectmode=MULTIPLE, height=10)
+        self.unique_values_listbox.pack(pady=5)
+
+        # Button to process and save CSV
+        Button(trips_window, text="Process and Save as CSV", command=self.process_and_save_csv).pack(pady=20)
+
+    def load_trips_xml_file(self):
+        """Load the trips XML file and display the path in the entry."""
+        trips_file = self.file_handler.load_xml_file()
+        if trips_file and len(trips_file) > 0:
+            self.trips_entry.delete(0, tk.END)
+            self.trips_entry.insert(0, trips_file)
+
+    def retrieve_unique_values(self):
+        """Retrieve unique types and vTypes from the XML file and display in Listbox."""
+        xml_file = self.trips_entry.get()
+
+        if not xml_file:
+            print("No XML file loaded.")
+            return
+
+        # Get unique types and vTypes
+        types, vtypes = self.data_processor.get_unique_types_and_vtypes(xml_file)
+
+        # Combine both lists and update Listbox
+        unique_values = types + vtypes
+        self.unique_values_listbox.delete(0, tk.END)
+        for value in unique_values:
+            self.unique_values_listbox.insert(tk.END, value)
+
+    def process_and_save_csv(self):
+        """Process the XML based on selected criteria and save as a CSV."""
+        xml_file = self.trips_entry.get()
+        selected_indices = self.unique_values_listbox.curselection()
+
+        if not xml_file or not selected_indices:
+            print("Please load a file and select at least one filter value.")
+            return
+
+        selected_values = [self.unique_values_listbox.get(i) for i in selected_indices]
+
+        # Determine whether the user selected 'type' or 'vType'
+        types, vtypes = self.data_processor.get_unique_types_and_vtypes(xml_file)
+        filter_by = 'type' if any(value in selected_values for value in types) else 'vType'
+
+        # Choose where to save the CSV file
+        csv_file = self.file_handler.save_csv_file()
+        if not csv_file:
+            print("No CSV file selected for saving.")
+            return
+
+        # Process the XML and save the result as CSV
+        self.data_processor.process_trips_xml(xml_file, filter_by, selected_values, csv_file)
+ 
+ 
 class FileHandler:
     def __init__(self):
         """Initialize the FileHandler class."""
@@ -660,16 +740,9 @@ class FileHandler:
             messagebox.showerror("Error", f"Error loading CSV file: {e}")
 
     def load_xml_file(self):
-        """Load an XML file and return its root element."""
-        file_path = filedialog.askopenfilename(filetypes=[("XML files", "*.xml")])
-        if file_path:
-            try:
-                tree = ET.parse(file_path)
-                root = tree.getroot()
-                return root
-            except ET.ParseError as e:
-                messagebox.showerror("Error", f"Failed to load XML file: {e}")
-        return None
+        """Open a dialog to select an XML file and return its path."""
+        file_path = filedialog.askopenfilename(title="Select trips XML File", filetypes=[("XML files", "*.xml")])
+        return file_path  # Return the file path as a string
         
     def load_stopout_file(self):
         """Load the stop output file."""
@@ -786,8 +859,64 @@ class FileHandler:
     def select_taz_xml_file(self):
         """Prompt the user to select the TAZ XML file."""
         return filedialog.askopenfilename(filetypes=[("XML files", "*.taz.xml")])
+        
+    def open_trips_xml_window(self):
+        """Open a window to load files and process trips XML data."""
+        
+        # Create a new window
+        trips_window = Toplevel(self.master)
+        trips_window.title("Process Trips XML")
+        trips_window.geometry("600x600")
 
-           
+        # Load Trips XML File
+        Label(trips_window, text="Trips XML File:").pack(pady=5)
+        trips_frame = tk.Frame(trips_window)
+        trips_frame.pack(pady=5)
+        self.trips_entry = Entry(trips_frame, width=60)
+        self.trips_entry.pack(side=tk.LEFT)
+        Button(trips_frame, text="Browse", command=self.load_trips_xml_file).pack(side=tk.LEFT, padx=5)
+
+        # Button to retrieve unique types and vTypes
+        Button(trips_window, text="Retrieve Unique Types and vTypes", command=self.retrieve_unique_values).pack(pady=10)
+
+        # Listbox for displaying and selecting unique values (Multiple Selection)
+        Label(trips_window, text="Select types or vTypes to include in CSV:").pack(pady=5)
+        self.unique_values_listbox = Listbox(trips_window, selectmode=MULTIPLE, height=10)
+        self.unique_values_listbox.pack(pady=5)
+
+        # Button to process and save CSV
+        Button(trips_window, text="Process and Save as CSV", command=self.process_and_save_csv).pack(pady=20)
+
+    def load_trips_xml_file(self):
+        """Load the trips XML file and display the path in the entry."""
+        trips_file = self.file_handler.load_xml_file()
+        if trips_file and len(trips_file) > 0:
+            self.trips_entry.delete(0, tk.END)
+            self.trips_entry.insert(0, trips_file)
+
+    def retrieve_unique_values(self):
+        """Retrieve unique types and vTypes from the XML file and display in Listbox."""
+        xml_file = self.trips_entry.get()
+
+        if not xml_file:
+            print("No XML file loaded.")
+            return
+
+        # Get unique types and vTypes
+        types, vtypes = self.data_processor.get_unique_types_and_vtypes(xml_file)
+
+        # Combine both lists and update Listbox
+        unique_values = types + vtypes
+        self.unique_values_listbox.delete(0, tk.END)
+        for value in unique_values:
+            self.unique_values_listbox.insert(tk.END, value)
+       
+
+    def save_csv_file(self):
+        """Open a dialog to save a CSV file and return the file path."""
+        file_path = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV files", "*.csv")])
+        return file_path
+        
 class DataProcessor:
     def __init__(self):
         self.edges_closures = []
@@ -1062,7 +1191,55 @@ class DataProcessor:
                 writer.writerow(row)
 
         print(f"Data has been successfully written to {csv_filename}")
-    
+        
+    def get_unique_types_and_vtypes(self, xml_file):
+        """Retrieve unique 'type' and 'vType' values from the XML file."""
+        tree = ET.parse(xml_file)
+        root = tree.getroot()
+
+        types = set()
+        vtypes = set()
+
+        for tripinfo in root.findall('tripinfo'):
+            type_value = tripinfo.attrib.get('type')
+            vtype_value = tripinfo.attrib.get('vType')
+            
+            if type_value:
+                types.add(type_value)
+            if vtype_value:
+                vtypes.add(vtype_value)
+
+        return sorted(types), sorted(vtypes)  # Return sorted lists of unique types and vTypes
+
+    def process_trips_xml(self, xml_file, filter_by, filter_values, csv_file):
+        """Process the XML file, filter by selected types or vTypes, and save the result as a CSV file."""
+        tree = ET.parse(xml_file)
+        root = tree.getroot()
+
+        rows = []
+        headers = ["id", "depart", "arrival", "duration", "routeLength", "timeLoss", "speedFactor"]
+
+        for tripinfo in root.findall('tripinfo'):
+            if tripinfo.attrib.get(filter_by) in filter_values:
+                row = {
+                    "id": tripinfo.attrib.get("id"),
+                    "depart": tripinfo.attrib.get("depart"),
+                    "arrival": tripinfo.attrib.get("arrival"),
+                    "duration": tripinfo.attrib.get("duration"),
+                    "routeLength": tripinfo.attrib.get("routeLength"),
+                    "waitingTime": tripinfo.attrib.get("waitingTime"),
+                    "timeLoss": tripinfo.attrib.get("timeLoss"),
+                    "speedFactor": tripinfo.attrib.get("speedFactor")
+                }
+                rows.append(row)
+
+        # Save to CSV
+        with open(csv_file, 'w', newline='') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=headers)
+            writer.writeheader()
+            writer.writerows(rows)
+
+        print(f"Processed data saved to: {csv_file}") 
 
 if __name__ == "__main__":
     root = tk.Tk()
