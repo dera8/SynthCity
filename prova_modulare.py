@@ -18,6 +18,7 @@ import csv
 import time 
 from io import TextIOWrapper
 from datetime import datetime
+from datetime import timedelta
 
 class SimulationApp:
     def __init__(self, master):
@@ -304,7 +305,9 @@ class SimulationApp:
             messagebox.showerror("Error", "GTFS file is not loaded.")
             return
 
-        routes_data, fieldnames = self.file_handler.load_gtfs_data_from_zip(self.gtfs_file, 'trips.txt')
+        # Load trips.txt and routes.txt from GTFS zip
+        routes_data, trips_fieldnames = self.file_handler.load_gtfs_data_from_zip(self.gtfs_file, 'trips.txt')
+        routes_info, _ = self.file_handler.load_gtfs_data_from_zip(self.gtfs_file, 'routes.txt')  # Load routes.txt
 
         modify_window = tk.Toplevel(self.master)
         modify_window.title("Modify GTFS")
@@ -332,18 +335,30 @@ class SimulationApp:
         route_ids_listbox.config(yscrollcommand=scrollbar.set)
         scrollbar.config(command=route_ids_listbox.yview)
 
-        # Populate the Listbox with route IDs
-        all_route_ids = sorted({row['route_id'] for row in routes_data})  # Sort for better readability
-        for route_id in all_route_ids:
-            route_ids_listbox.insert(tk.END, route_id)
+        # Create a dictionary mapping route_id to route_long_name
+        route_dict = {row['route_id']: row.get('route_long_name', '') for row in routes_info}
+
+        # Create a dictionary to track remaining trips in trips.txt per route_id
+        trips_by_route = {route_id: [] for route_id in route_dict}
+
+        # Populate the trips_by_route dictionary with trip info from trips.txt
+        for trip in routes_data:
+            route_id = trip['route_id']
+            if route_id in trips_by_route:
+                trips_by_route[route_id].append(trip)
+
+        # Populate the Listbox with both route_id and route_long_name if there are trips left
+        all_routes = [f"{route_id}: {route_dict[route_id]}" for route_id in trips_by_route if trips_by_route[route_id]]
+        for route in all_routes:
+            route_ids_listbox.insert(tk.END, route)
 
         # Function to update the listbox based on the search query
         def update_listbox(*args):
             search_query = search_entry.get().strip().lower()
             route_ids_listbox.delete(0, tk.END)
-            for route_id in all_route_ids:
-                if search_query in route_id.lower():
-                    route_ids_listbox.insert(tk.END, route_id)
+            for route in all_routes:
+                if search_query in route.lower():
+                    route_ids_listbox.insert(tk.END, route)
 
         # Bind the search entry to the update function
         search_entry.bind("<KeyRelease>", update_listbox)
@@ -353,8 +368,12 @@ class SimulationApp:
         percentage_entry.pack(pady=5)
 
         def process_modification():
+            nonlocal all_routes  # Ensure we are referring to the outer `all_routes` variable
             selected_indices = route_ids_listbox.curselection()
-            selected_route_ids = [route_ids_listbox.get(i) for i in selected_indices]
+            selected_route_entries = [route_ids_listbox.get(i) for i in selected_indices]
+
+            # Extract the route_id from the "route_id: route_long_name" format
+            selected_route_ids = [entry.split(":")[0].strip() for entry in selected_route_entries]
             percentage = percentage_entry.get()
 
             if not selected_route_ids or not percentage:
@@ -370,15 +389,36 @@ class SimulationApp:
                 return
 
             modified_data = routes_data
+
+            # Track route_ids to remove if 100% of trips are deleted
+            routes_to_remove = []
+
             for route_id in selected_route_ids:
+                # Delete percentage of trips for the selected route
                 modified_data = self.data_processor.delete_percentage_of_trips_from_route(modified_data, route_id, percentage)
 
-            new_gtfs_filename = self.file_handler.save_gtfs_data_to_zip(self.gtfs_file, 'trips.txt', modified_data, fieldnames)
+                # Check if there are remaining trips for this route_id
+                remaining_trips = [row for row in modified_data if row['route_id'] == route_id]
+                trips_by_route[route_id] = remaining_trips
+
+                # If no remaining trips, mark this route_id for removal
+                if not remaining_trips:
+                    routes_to_remove.append(route_id)
+
+            # Update the trips.txt file with the modified data
+            new_gtfs_filename = self.file_handler.save_gtfs_data_to_zip(self.gtfs_file, 'trips.txt', modified_data, trips_fieldnames)
             self.output_text.insert(tk.END, f"Modified GTFS saved as {new_gtfs_filename}\n")
-            modify_window.destroy()
+
+            # Remove route_ids that have no trips left in trips.txt from the listbox
+            for route_id in routes_to_remove:
+                all_routes = [route for route in all_routes if not route.startswith(route_id)]
+                route_ids_listbox.delete(0, tk.END)  # Clear the listbox
+                for route in all_routes:
+                    route_ids_listbox.insert(tk.END, route)
 
         tk.Button(modify_window, text="Apply Modification", command=process_modification).pack(pady=20)
-        
+   
+    
     def generate_synthetic_dataset(self):
         """Open a window for generating the synthetic dataset."""
         synth_window = Toplevel(self.master)
@@ -638,13 +678,13 @@ class SimulationApp:
         # Create a new window
         trips_window = Toplevel(self.master)
         trips_window.title("Process Trips XML")
-        trips_window.geometry("600x600")
+        trips_window.geometry("600x700")
 
         # Load Trips XML File
         Label(trips_window, text="Trips XML File:").pack(pady=5)
         trips_frame = tk.Frame(trips_window)
         trips_frame.pack(pady=5)
-        self.trips_entry = Entry(trips_frame, width=60)
+        self.trips_entry = Entry(trips_frame, width=60)  # trips_entry is created here
         self.trips_entry.pack(side=tk.LEFT)
         Button(trips_frame, text="Browse", command=self.load_trips_xml_file).pack(side=tk.LEFT, padx=5)
 
@@ -655,6 +695,11 @@ class SimulationApp:
         Label(trips_window, text="Select types or vTypes to include in CSV:").pack(pady=5)
         self.unique_values_listbox = Listbox(trips_window, selectmode=MULTIPLE, height=10)
         self.unique_values_listbox.pack(pady=5)
+
+        # Calendar for selecting the date for 'depart' and 'arrival'
+        Label(trips_window, text="Select the date for depart and arrival:").pack(pady=5)
+        self.cal = Calendar(trips_window, selectmode='day', date_pattern='yyyy-mm-dd')
+        self.cal.pack(pady=10)
 
         # Button to process and save CSV
         Button(trips_window, text="Process and Save as CSV", command=self.process_and_save_csv).pack(pady=20)
@@ -671,7 +716,7 @@ class SimulationApp:
         xml_file = self.trips_entry.get()
 
         if not xml_file:
-            print("No XML file loaded.")
+            messagebox.showerror("Error", "No XML file loaded.")
             return
 
         # Get unique types and vTypes
@@ -689,10 +734,13 @@ class SimulationApp:
         selected_indices = self.unique_values_listbox.curselection()
 
         if not xml_file or not selected_indices:
-            print("Please load a file and select at least one filter value.")
+            messagebox.showerror("Error", "Please load a file and select at least one filter value.")
             return
 
         selected_values = [self.unique_values_listbox.get(i) for i in selected_indices]
+
+        # Get the selected date from the calendar
+        selected_date = self.cal.get_date()
 
         # Determine whether the user selected 'type' or 'vType'
         types, vtypes = self.data_processor.get_unique_types_and_vtypes(xml_file)
@@ -701,13 +749,13 @@ class SimulationApp:
         # Choose where to save the CSV file
         csv_file = self.file_handler.save_csv_file()
         if not csv_file:
-            print("No CSV file selected for saving.")
+            messagebox.showerror("Error", "No CSV file selected for saving.")
             return
 
         # Process the XML and save the result as CSV
-        self.data_processor.process_trips_xml(xml_file, filter_by, selected_values, csv_file)
- 
- 
+        self.data_processor.process_trips_xml(xml_file, filter_by, selected_values, csv_file, selected_date)
+
+    
 class FileHandler:
     def __init__(self):
         """Initialize the FileHandler class."""
@@ -1211,25 +1259,47 @@ class DataProcessor:
 
         return sorted(types), sorted(vtypes)  # Return sorted lists of unique types and vTypes
 
-    def process_trips_xml(self, xml_file, filter_by, filter_values, csv_file):
+    def process_trips_xml(self, xml_file, filter_by, filter_values, csv_file, selected_date):
         """Process the XML file, filter by selected types or vTypes, and save the result as a CSV file."""
         tree = ET.parse(xml_file)
         root = tree.getroot()
 
         rows = []
-        headers = ["id", "depart", "arrival", "duration", "routeLength", "timeLoss", "speedFactor"]
+        headers = ["id", "depart", "arrival", "duration", "routeLength", "timeLoss", "speedFactor", "waitingTime"]
 
         for tripinfo in root.findall('tripinfo'):
             if tripinfo.attrib.get(filter_by) in filter_values:
+                # Apply the selected date to the depart and arrival times
+                depart_time = tripinfo.attrib.get("depart", "")
+                arrival_time = tripinfo.attrib.get("arrival", "")
+                
+                # Combine the selected date with the time from the XML (if available)
+                if depart_time:
+                    depart = f"{selected_date} {depart_time.split(' ')[-1]}"  # Format: yyyy-mm-dd HH:MM:SS
+                else:
+                    depart = selected_date
+
+                if arrival_time:
+                    arrival = f"{selected_date} {arrival_time.split(' ')[-1]}"  # Format: yyyy-mm-dd HH:MM:SS
+                else:
+                    arrival = selected_date
+
+                # Process the timeLoss to remove fractional seconds
+                raw_time_loss = tripinfo.attrib.get("timeLoss", "00:00:00")
+                
+                # Remove the fractional part of the time (anything after the dot)
+                time_loss = raw_time_loss.split('.')[0]  # Keep only the hh:mm:ss part
+
+                # Append row to be saved in the CSV
                 row = {
                     "id": tripinfo.attrib.get("id"),
-                    "depart": tripinfo.attrib.get("depart"),
-                    "arrival": tripinfo.attrib.get("arrival"),
+                    "depart": depart,
+                    "arrival": arrival,
                     "duration": tripinfo.attrib.get("duration"),
                     "routeLength": tripinfo.attrib.get("routeLength"),
-                    "waitingTime": tripinfo.attrib.get("waitingTime"),
-                    "timeLoss": tripinfo.attrib.get("timeLoss"),
-                    "speedFactor": tripinfo.attrib.get("speedFactor")
+                    "timeLoss": time_loss,  # formatted as hh:mm:ss without fractional seconds
+                    "speedFactor": tripinfo.attrib.get("speedFactor"),
+                    "waitingTime": tripinfo.attrib.get("waitingTime")
                 }
                 rows.append(row)
 
@@ -1239,7 +1309,8 @@ class DataProcessor:
             writer.writeheader()
             writer.writerows(rows)
 
-        print(f"Processed data saved to: {csv_file}") 
+        print(f"Processed data saved to: {csv_file}")
+   
 
 if __name__ == "__main__":
     root = tk.Tk()
