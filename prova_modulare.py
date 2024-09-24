@@ -1,5 +1,3 @@
-#crea calendario per stopout
-
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk, simpledialog
 from tkcalendar import Calendar
@@ -112,6 +110,9 @@ class SimulationApp:
         self.modify_od_button = tk.Button(action_frame, text="Modify OD Matrix", command=self.adjust_od_matrix)
         self.modify_od_button.grid(row=0, column=5, padx=5)
         
+        self.modify_percentage_od_button = tk.Button(self.master, text="Modify OD Matrix by Percentage", command=self.open_modify_od_percentage_window).pack(pady=10)
+        self.modify_od_button.grid(row=0, column=7, padx=5)
+        
         self.modify_gtfs_button = tk.Button(action_frame, text="Modify GTFS", command=self.modify_gtfs)
         self.modify_gtfs_button.grid(row=0, column=4, padx=5)
         
@@ -120,7 +121,7 @@ class SimulationApp:
         self.synth_edge_button = tk.Button(self.master, text="Generate Edge Dataset", command=self.open_generate_dataset_window).pack(pady=10)
 
         self.trips_stop_button = tk.Button(self.master, text="Generate Trips Dataset", command=self.open_trips_xml_window).pack(pady=10)
-
+        
     def load_network_file(self):
         """Load network file, update entry field, and populate road list."""
         self.network_file = filedialog.askopenfilename(title="Select Network File", filetypes=[("XML files", "*.xml")])
@@ -754,6 +755,60 @@ class SimulationApp:
 
         # Process the XML and save the result as CSV
         self.data_processor.process_trips_xml(xml_file, filter_by, selected_values, csv_file, selected_date)
+        
+    def open_modify_od_percentage_window(self):
+        """Open a window to apply percentage modification to the entire OD matrix."""
+        if not self.od_matrix_file:
+            messagebox.showerror("Error", "No OD matrix file loaded.")
+            return
+
+        modify_window = tk.Toplevel(self.master)
+        modify_window.title("Modify OD Matrix by Percentage")
+        modify_window.geometry("400x300")
+
+        # Label and Entry for Percentage
+        tk.Label(modify_window, text="Enter percentage to modify the matrix:").pack(pady=5)
+        percentage_entry = tk.Entry(modify_window)
+        percentage_entry.pack(pady=5)
+
+        # RadioButtons for Add or Subtract Operation
+        operation_var = tk.StringVar(value="add")  # Default to "add"
+        tk.Label(modify_window, text="Select Operation:").pack(pady=5)
+        tk.Radiobutton(modify_window, text="Add", variable=operation_var, value="add").pack(anchor=tk.W)
+        tk.Radiobutton(modify_window, text="Subtract", variable=operation_var, value="subtract").pack(anchor=tk.W)
+
+        def apply_percentage_modification():
+            percentage = percentage_entry.get().strip()
+            operation = operation_var.get()
+
+            try:
+                percentage = float(percentage)
+                if percentage < 0:
+                    raise ValueError("Percentage cannot be negative.")
+            except ValueError as e:
+                messagebox.showerror("Error", f"Invalid percentage value: {e}")
+                return
+
+            # Apply the percentage modification
+            header_lines, updated_od_data = self.data_processor.modify_od_matrix_percentage(
+                self.od_matrix_file, percentage, operation, self.file_handler
+            )
+
+            # Ask user to save as a new file or overwrite
+            save_as_new = messagebox.askyesno("Save OD Matrix", "Do you want to save the modified OD matrix as a new file?")
+            if save_as_new:
+                save_file_path = filedialog.asksaveasfilename(defaultextension=".od", filetypes=[("Text files", "*.od")])
+                if save_file_path:
+                    self.file_handler.write_od_matrix(save_file_path, header_lines, updated_od_data)
+                    self.output_text.insert(tk.END, f"OD Matrix saved as new file: {save_file_path}\n")
+            else:
+                self.file_handler.write_od_matrix(self.od_matrix_file, header_lines, updated_od_data)
+                self.output_text.insert(tk.END, f"OD Matrix modified and saved: {operation} {percentage}% for all zones.\n")
+
+            modify_window.destroy()
+
+        tk.Button(modify_window, text="Apply", command=apply_percentage_modification).pack(pady=10) 
+
 
     
 class FileHandler:
@@ -1023,6 +1078,32 @@ class DataProcessor:
         updated_od_data = [[key[0], key[1], value] for key, value in od_matrix.items()]
 
         return header_lines, updated_od_data
+        
+    def modify_od_matrix_percentage(self, od_matrix_file, percentage, operation, file_handler):
+        """Modify the OD matrix by adding or subtracting a percentage for all zones."""
+        header_lines, od_data = file_handler.read_od_matrix(od_matrix_file)
+
+        od_matrix = {(row[0], row[1]): row[2] for row in od_data}
+
+        if operation not in ['add', 'subtract']:
+            messagebox.showerror("Error", "Invalid operation. Use 'add' or 'subtract'.")
+            return
+
+        for (from_zone, to_zone), trips in od_matrix.items():
+            if operation == 'add':
+                od_matrix[(from_zone, to_zone)] = int(trips + (trips * (percentage / 100)))
+            elif operation == 'subtract':
+                new_value = int(trips - (trips * (percentage / 100)))
+                if new_value < 0:
+                    messagebox.showerror("Error", f"Resulting trips from {from_zone} to {to_zone} cannot be negative.")
+                    return
+                od_matrix[(from_zone, to_zone)] = new_value
+
+        updated_od_data = [[key[0], key[1], value] for key, value in od_matrix.items()]
+
+        return header_lines, updated_od_data
+
+
         
     def delete_routes(self, data, routes_to_delete):
         """Delete routes based on route IDs."""
