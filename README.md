@@ -1,110 +1,58 @@
-# SUMO_Toolbox
+# SUMO ToolBox
+This tool is designed to enhance traffic simulation workflows in [SUMO](https://www.eclipse.org/sumo/) (Simulation of Urban Mobility). It offers a user-friendly interface for managing road closures, rerouting traffic, modifying origin-destination (OD) matrices, and generating synthetic datasets. The tool facilitates the simulation of varied traffic scenarios, making it ideal for traffic flow studies and infrastructure planning.
 
-## Project Overview
-This project focuses on enhancing urban mobility analysis through synthetic traffic data generation using the SUMO (Simulation of Urban MObility) software. We aim to create a detailed and realistic simulation of urban traffic scenarios, incorporating both private and public transportation systems. This project includes datasets, configurations, and scripts necessary to run and analyze traffic simulations in the city of Genoa.
+## Features
+- **OD-Matrices Generation**: create 24-hour OD-matrices based on real daily time lines.
+- **Anomaly Creations**: create anomalies in road infrastructure or traffic flow.
+  - **Road Closure Management**: Close specific streets and define rerouting paths for traffic, based on a selected time interval.   
+  - 
+- **OD Matrix Modification**: Adjust traffic flow by adding or subtracting a percentage or a fixed number of trips between selected origin and destination zones.
+- **Synthetic Dataset Generation**: Generate synthetic datasets of public transit stops using selected dates, directories, and customized stop files.
 
-- [Introduction](#introduction)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-- [Usage](#usage)
-  - [Scenario Files Description](#dataset-description)
-  - [Scenario Configuration](#scenario-configuration)
-  - [Simulation Execution](#simulation-execution)
-- [Contributing](#contributing)
-- [License](#license)
+## Requirements
 
-## Getting Started
+- **Python**: Version 3.8 or higher
+- **SUMO**: [Simulation of Urban Mobility](https://www.eclipse.org/sumo/)
 
-These instructions will help you set up and run the traffic simulations on your local machine.
+## Installation
 
-### Prerequisites
+1. **Clone this repository**:
 
-- **SUMO:** Ensure you have SUMO installed. You can download it from [SUMO Download Page](https://sumo.dlr.de/docs/Downloads.php).
-- **Python:** Python 3.x is required to run the supplementary scripts.
-- **Git:** To clone this repository.
-
-### Installation
-
-1. **Clone the repository:**
-
-    ```sh
-    git clone https://github.com/yourusername/SUMOSim.git
-    cd SUMOSim
-    ```
+   ```bash
+   git clone https://github.com/your-username/traffic-simulation-tool.git
+   cd traffic-simulation-tool
 
 ## Usage
 
-### Scenario Files Description
+1. **Run the Tool**:
+   Start the user interface by running the main application file.
+   ```bash
+   python sumo_toolbox.py
 
-The dataset is created with the following input files:
+## Interface Overview
+Generate PT Stops Dataset: Creates a synthetic dataset for public transit stops using GTFS data and the selected date.
+Close Roads: Manages road closures and rerouting for traffic simulations.
+Modify OD Matrix by Percentage: Adjusts traffic flows between zones by a specified percentage.
+Adjust OD Matrix by Value: Increases or decreases trips between zones by a custom value.
 
-- **Network File:** `osm.net.xml` - The road network of the city.
-- **Route Files:** 
-    - `pubblici.routes_modified.xml` - Routes for public transportation.
-    - `privati.routes.xml` - Routes for private vehicles.
-- **Additional Files:** 
-    - `gtfs_pt_stops.add.xml` - Public transport stops.
-    - `gtfs_pt_vehicles.add2.xml` - Public transport vehicles.
+## Step-by-Step Guide
+Road Closure Management
+Select roads from the list to set as closed.
+Define closure start and end times.
+Generate the closure XML file to be used in SUMO for rerouting vehicles around the closure.
+Modify OD Matrix
+Select origin and destination zones from the OD matrix.
+Adjust traffic flows by adding or subtracting a percentage or a fixed number of trips.
+Save the modified OD matrix as a new file or overwrite the existing file.
+Synthetic Dataset Generation
+Generate synthetic public transit stop datasets using GTFS data by selecting a date, output file, and directories.
+Use the dataset for transit-related simulations in SUMO.
 
-### Scenario Configuration
+## Example SUMO integration
 
-The scenario configuration file (`sumo_config.xml`) is used to set up the simulation parameters. Below is a breakdown of the configuration elements:
 
-```xml
-<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
+## Additional Resources
 
-    <input>  
-        <net-file value="osm.net.xml"/>
-        <route-files value="pubblici.routes_modified.xml,privati.routes.xml"/> 
-        <additional-files value="gtfs_pt_stops.add.xml,gtfs_pt_vehicles.add2.xml,edgeadd.xml"/> 
-        <time>  
-            <begin value="0"/> 
-            <human-readable-time value="true"/>  
-        </time>  
-    </input> 
 
-    <output>  
-        <stop-output value="stops_dayyear.out.xml"/>
-        <edgedata-output value="edge_dayyear.xml"/>
-    </output> 
 
-    <processing>  
-        <ignore-route-errors value="true"/>
-        <time-to-teleport value="-1"/>  
-        <ignore-junction-blocker value="1"/> 
-    </processing> 
-
-    <mesoscopic>  
-        <mesosim value="true"/>
-        <meso-junction-control value="true"/>  
-        <meso-overtaking value="true"/>
-        <meso-lane-queue value="true"/>
-    </mesoscopic>  
-
-</configuration>
-```
-
-### Simulation Execution
-Prepare the simulation:
-
-Ensure all input files are in place and correctly referenced in the configuration file.
-
-Run the simulation:
-
-```
-sumo -c cfg.xml 
-```
-
-or right-click on the file.
-
-### Analyze the output:
-
-- stops_daydate.out.xml contains data on stops made by public transport.
-- edge_daydate.xml provides edge-based traffic data.
-
-## Contributing
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
 
