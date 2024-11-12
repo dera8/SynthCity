@@ -27,12 +27,10 @@ This tool is designed to enhance traffic simulation workflows in [SUMO](https://
    python sumo_toolbox.py
 
 ## Interface Overview
-**Generate PT Stops Dataset**: Creates a synthetic dataset for public transit stops using GTFS data and the selected date.
-**Close Roads**: Manages road closures and rerouting for traffic simulations.
-**Modify OD Matrix by Percentage**: Adjusts traffic flows between zones by a specified percentage.
-**Adjust OD Matrix by Value**: Increases or decreases trips between zones by a custom value.
-**Road Closure Management**: Close specific streets and define rerouting paths for traffic, based on a selected time interval.   
-**Public Transport Anomaly**: Delete a percentage of trips in gtfs files.  
-
-## Example SUMO integration
+- **Generate PT Stops Dataset**: Creates a synthetic dataset for public transit stops using GTFS data and the selected date.
+- **Close Roads**: Manages road closures and rerouting for traffic simulations.
+- **Modify OD Matrix by Percentage**: Adjusts traffic flows between zones by a specified percentage.
+- **Adjust OD Matrix by Value**: Increases or decreases trips between zones by a custom value.
+- **Road Closure Management**: Close specific streets and define rerouting paths for traffic, based on a selected time interval.   
+- **Public Transport Anomaly**: Delete a percentage of trips in gtfs files.  
 
