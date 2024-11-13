@@ -28,6 +28,8 @@ This tool is designed to enhance traffic simulation workflows in [SUMO](https://
 
 ## Interface Overview
 - **Generate PT Stops Dataset**: Creates a synthetic dataset for public transit stops using GTFS data and the selected date.
+- **Generate Edge Dataset**: Creates a synthetic dataset for edges measurements like density and number of entered vehicles.
+- **Generate Trip Dataset**:  Generates a synthetic trip dataset containing informations like trip duration and number of reroutings.
 - **Close Roads**: Manages road closures and rerouting for traffic simulations.
 - **Modify OD Matrix by Percentage**: Adjusts traffic flows between zones by a specified percentage.
 - **Adjust OD Matrix by Value**: Increases or decreases trips between zones by a custom value.
