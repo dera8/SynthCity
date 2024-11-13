@@ -98,29 +98,46 @@ class SimulationApp:
         self.load_gtfs_button.grid(row=1, column=2, padx=5)
 
     def create_action_buttons(self):
-        """Create action buttons."""
+        """Create action buttons organized into two titled frames for better visual appeal."""
+        
+        # Main frame to hold both left and right sections
         action_frame = tk.Frame(self.master)
-        action_frame.pack(pady=10)
+        action_frame.pack(pady=20)
         
-        self.create_od_button = tk.Button(self.master, text="Generate OD Matrices", command=self.generate_od_matrices).pack(pady=10)
+        # Left frame for OD matrix and road modification-related buttons with a title
+        left_frame = tk.LabelFrame(action_frame, text="OD Matrix and Road Modifications", padx=10, pady=10)
+        left_frame.pack(side=tk.LEFT, padx=20, pady=10, fill="y")
+        
+        # Right frame for dataset generation buttons with a title
+        right_frame = tk.LabelFrame(action_frame, text="Dataset Generation", padx=10, pady=10)
+        right_frame.pack(side=tk.RIGHT, padx=20, pady=10, fill="y")
+        
+        # Buttons in the left frame
+        self.create_od_button = tk.Button(left_frame, text="Generate OD Matrices", command=self.generate_od_matrices)
+        self.create_od_button.pack(fill="x", pady=5)
+        
+        self.close_roads_button = tk.Button(left_frame, text="Close Roads", command=self.close_roads)
+        self.close_roads_button.pack(fill="x", pady=5)
+        
+        self.modify_gtfs_button = tk.Button(left_frame, text="Modify GTFS", command=self.modify_gtfs)
+        self.modify_gtfs_button.pack(fill="x", pady=5)
+        
+        self.modify_od_button = tk.Button(left_frame, text="Modify OD Matrix", command=self.adjust_od_matrix)
+        self.modify_od_button.pack(fill="x", pady=5)
+        
+        self.modify_percentage_od_button = tk.Button(left_frame, text="Modify OD Matrix by Percentage", command=self.open_modify_od_window)
+        self.modify_percentage_od_button.pack(fill="x", pady=5)
+        
+        # Buttons in the right frame
+        self.synth_stop_button = tk.Button(right_frame, text="Generate PT Stops Dataset", command=self.generate_synthetic_dataset)
+        self.synth_stop_button.pack(fill="x", pady=5)
+        
+        self.synth_edge_button = tk.Button(right_frame, text="Generate Edge Dataset", command=self.open_generate_dataset_window)
+        self.synth_edge_button.pack(fill="x", pady=5)
+        
+        self.trips_stop_button = tk.Button(right_frame, text="Generate Trips Dataset", command=self.open_trips_xml_window)
+        self.trips_stop_button.pack(fill="x", pady=5)
 
-        self.close_roads_button = tk.Button(action_frame, text="Close Roads", command=self.close_roads)
-        self.close_roads_button.grid(row=0, column=3, padx=5)
-        
-        self.modify_od_button = tk.Button(action_frame, text="Modify OD Matrix", command=self.adjust_od_matrix)
-        self.modify_od_button.grid(row=0, column=5, padx=5)
-        
-        self.modify_percentage_od_button = tk.Button(self.master, text="Modify OD Matrix by Percentage", command=self.open_modify_od_window).pack(pady=10)
-        self.modify_od_button.grid(row=0, column=7, padx=5)
-        
-        self.modify_gtfs_button = tk.Button(action_frame, text="Modify GTFS", command=self.modify_gtfs)
-        self.modify_gtfs_button.grid(row=0, column=4, padx=5)
-        
-        self.synth_stop_button =tk.Button(self.master, text="Generate PT Stops Dataset", command=self.generate_synthetic_dataset).pack(pady=10)  
-        
-        self.synth_edge_button = tk.Button(self.master, text="Generate Edge Dataset", command=self.open_generate_dataset_window).pack(pady=10)
-
-        self.trips_stop_button = tk.Button(self.master, text="Generate Trips Dataset", command=self.open_trips_xml_window).pack(pady=10)
         
     def load_network_file(self):
         """Load network file, update entry field, and populate road list."""
