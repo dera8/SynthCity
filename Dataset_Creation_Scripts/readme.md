@@ -1,9 +1,6 @@
-Here’s the `README.md` formatted for GitHub:
-
-
 # Transportation Data Management Scripts
 
-A collection of Python scripts for processing transportation data, including generating datasets for stops, edges, and trips from GTFS and SUMO files.
+A collection of Python scripts for generating datasets for stops, edges, and trips from GTFS and SUMO files.
 
 ## Table of Contents
 - [Scripts](#scripts)
