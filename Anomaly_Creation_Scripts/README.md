@@ -25,17 +25,18 @@ This script reads an OD matrix file and modifies the number of trips between spe
   python modify_od_matrix_by_percentage.py <od_file> <from_zone> <to_zone> <operation> <percentage>
   ```
   
-**Example**:
+- **Example**:
  ```bash
 python modify_od_matrix_by_percentage.py od_matrix.od 1 2 add 10
  ```
 
 - **Parameters**:
-<od_file>: Path to the OD matrix file.
-<from_zone>: Origin zone ID.
-<to_zone>: Destination zone ID.
-<operation>: add or subtract.
-<percentage>: Percentage to add or subtract.
+  - <od_file>: Path to the OD matrix file.
+  - <from_zone>: Origin zone ID.
+  - <to_zone>: Destination zone ID.
+  - <operation>: add or subtract.
+  - <percentage>: Percentage to add or subtract.
+
 This script saves the modified OD matrix as modified_od_matrix.od in the current directory.
 
 ### 2. Adjust OD Matrix by Value
@@ -52,18 +53,19 @@ python adjust_od_matrix_by_value.py od_matrix.od 1 2 subtract 5
  ```
 
 - **Parameters**:
-<od_file>: Path to the OD matrix file.
-<from_zone>: Origin zone ID.
-<to_zone>: Destination zone ID.
-<operation>: add or subtract.
-<value>: Value to add or subtract.
+  - <od_file>: Path to the OD matrix file.
+  - <from_zone>: Origin zone ID.
+  - <to_zone>: Destination zone ID.
+  - <operation>: add or subtract.
+  - <value>: Value to add or subtract.
+    
 This script saves the adjusted OD matrix as adjusted_od_matrix.od.
 
 ### 3. Road Closure Management
 This script generates an XML file that specifies road closures based on a time interval.
 
-Filename: road_closure_management.py
-Usage:
+- **Filename**: road_closure_management.py
+- **Usage**:
  ```bash
 python road_closure_management.py <network_file> <roads_to_close> <begin_hour> <end_hour> <output_file>
  ```
@@ -83,8 +85,8 @@ This script saves the road closure configuration to the specified output_file.
 ### 4. Public Transport Anomaly: Delete a Percentage of Trips in GTFS Files
 This script removes a percentage of trips from the trips.txt file within a GTFS ZIP file based on a route ID.
 
-Filename: public_transport_anomaly.py
-Usage:
+-**Filename**: public_transport_anomaly.py
+-**Usage**:
  ```bash
 python public_transport_anomaly.py <gtfs_zip> <route_id> <percentage>
  ```
@@ -95,15 +97,16 @@ python public_transport_anomaly.py gtfs_data.zip route1 20
  ```
 
 -**Parameters**:
-<gtfs_zip>: Path to the GTFS ZIP file.
-<route_id>: Route ID to delete trips from.
-<percentage>: Percentage of trips to delete (0-100).
+  -<gtfs_zip>: Path to the GTFS ZIP file.
+  - <route_id>: Route ID to delete trips from.
+  - <percentage>: Percentage of trips to delete (0-100).
+
 This script creates a modified GTFS archive as modified_<gtfs_zip> and deletes the specified percentage of trips for the chosen route ID.
 
-- **Usage**:
+### Usage:
 To use these scripts, please make sure you have Python 3.x installed. Download or clone this repository and run the desired script from the command line as shown in the examples above.
 
 Each script provides an inline Usage message if run with incorrect or no arguments.
 
-License
+### License:
 This project is licensed under the MIT License.
