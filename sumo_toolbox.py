@@ -319,125 +319,132 @@ class SimulationApp:
         submit_button.pack(pady=10)  # Ensure the button is packed into the window
 
     def modify_gtfs(self):
-        """Allow user to modify GTFS data by selecting routes to delete or modify."""
+        """Allow user to modify GTFS data by selecting routes or stops to delete."""
         if not self.gtfs_file:
             messagebox.showerror("Error", "GTFS file is not loaded.")
             return
 
-        # Load trips.txt and routes.txt from GTFS zip
-        routes_data, trips_fieldnames = self.file_handler.load_gtfs_data_from_zip(self.gtfs_file, 'trips.txt')
-        routes_info, _ = self.file_handler.load_gtfs_data_from_zip(self.gtfs_file, 'routes.txt')  # Load routes.txt
+        # Load trips.txt, routes.txt, and stops.txt from GTFS zip
+        trips_data, trips_fieldnames = self.file_handler.load_gtfs_data_from_zip(self.gtfs_file, 'trips.txt')
+        routes_info, _ = self.file_handler.load_gtfs_data_from_zip(self.gtfs_file, 'routes.txt')
+        stops_data, stops_fieldnames = self.file_handler.load_gtfs_data_from_zip(self.gtfs_file, 'stops.txt')
 
+        # Create the modification window
         modify_window = tk.Toplevel(self.master)
         modify_window.title("Modify GTFS")
-        modify_window.geometry("500x600")
+        modify_window.geometry("800x600")
 
-        tk.Label(modify_window, text="Search routes:").pack(pady=5)
+        # ROUTE MODIFICATION SECTION
+        tk.Label(modify_window, text="Search Routes:").pack(pady=5)
+        route_search_entry = tk.Entry(modify_window)
+        route_search_entry.pack(pady=5)
 
-        # Entry for searching routes
-        search_entry = tk.Entry(modify_window)
-        search_entry.pack(pady=5)
+        route_listbox_frame = tk.Frame(modify_window)
+        route_listbox_frame.pack(pady=5, fill=tk.BOTH, expand=True)
 
-        # Frame to contain Listbox and Scrollbar
-        listbox_frame = tk.Frame(modify_window)
-        listbox_frame.pack(pady=5, fill=tk.BOTH, expand=True)
-
-        # Listbox for selecting routes
-        route_ids_listbox = tk.Listbox(listbox_frame, selectmode=tk.MULTIPLE, width=50, height=20)
+        route_ids_listbox = tk.Listbox(route_listbox_frame, selectmode=tk.MULTIPLE, width=50, height=10)
         route_ids_listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
-        # Scrollbar for the Listbox
-        scrollbar = tk.Scrollbar(listbox_frame)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-
-        # Configure the Listbox and Scrollbar
-        route_ids_listbox.config(yscrollcommand=scrollbar.set)
-        scrollbar.config(command=route_ids_listbox.yview)
+        route_scrollbar = tk.Scrollbar(route_listbox_frame)
+        route_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        route_ids_listbox.config(yscrollcommand=route_scrollbar.set)
+        route_scrollbar.config(command=route_ids_listbox.yview)
 
         # Create a dictionary mapping route_id to route_long_name
         route_dict = {row['route_id']: row.get('route_long_name', '') for row in routes_info}
-
-        # Create a dictionary to track remaining trips in trips.txt per route_id
         trips_by_route = {route_id: [] for route_id in route_dict}
 
-        # Populate the trips_by_route dictionary with trip info from trips.txt
-        for trip in routes_data:
+        for trip in trips_data:
             route_id = trip['route_id']
             if route_id in trips_by_route:
                 trips_by_route[route_id].append(trip)
 
-        # Populate the Listbox with both route_id and route_long_name if there are trips left
         all_routes = [f"{route_id}: {route_dict[route_id]}" for route_id in trips_by_route if trips_by_route[route_id]]
         for route in all_routes:
             route_ids_listbox.insert(tk.END, route)
 
-        # Function to update the listbox based on the search query
-        def update_listbox(*args):
-            search_query = search_entry.get().strip().lower()
+        # Filter function for route listbox
+        def update_route_listbox(*args):
+            search_query = route_search_entry.get().strip().lower()
             route_ids_listbox.delete(0, tk.END)
             for route in all_routes:
                 if search_query in route.lower():
                     route_ids_listbox.insert(tk.END, route)
 
-        # Bind the search entry to the update function
-        search_entry.bind("<KeyRelease>", update_listbox)
+        route_search_entry.bind("<KeyRelease>", update_route_listbox)
 
         tk.Label(modify_window, text="Enter percentage of trips to delete (0-100):").pack(pady=5)
         percentage_entry = tk.Entry(modify_window, width=10)
         percentage_entry.pack(pady=5)
 
-        def process_modification():
-            nonlocal all_routes  # Ensure we are referring to the outer `all_routes` variable
-            selected_indices = route_ids_listbox.curselection()
-            selected_route_entries = [route_ids_listbox.get(i) for i in selected_indices]
+        # STOPS DELETION SECTION
+        tk.Label(modify_window, text="Search Stops to delete:").pack(pady=5)
+        stop_search_entry = tk.Entry(modify_window)
+        stop_search_entry.pack(pady=5)
 
-            # Extract the route_id from the "route_id: route_long_name" format
-            selected_route_ids = [entry.split(":")[0].strip() for entry in selected_route_entries]
+        stop_listbox_frame = tk.Frame(modify_window)
+        stop_listbox_frame.pack(pady=5, fill=tk.BOTH, expand=True)
+
+        stop_ids_listbox = tk.Listbox(stop_listbox_frame, selectmode=tk.MULTIPLE, width=50, height=10)
+        stop_ids_listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        stop_scrollbar = tk.Scrollbar(stop_listbox_frame)
+        stop_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        stop_ids_listbox.config(yscrollcommand=stop_scrollbar.set)
+        stop_scrollbar.config(command=stop_ids_listbox.yview)
+
+        all_stops = [f"{stop['stop_id']} - {stop.get('stop_name', '')}" for stop in stops_data]
+        for stop in all_stops:
+            stop_ids_listbox.insert(tk.END, stop)
+
+        # Filter function for stop listbox
+        def update_stop_listbox(*args):
+            search_query = stop_search_entry.get().strip().lower()
+            stop_ids_listbox.delete(0, tk.END)
+            for stop in all_stops:
+                if search_query in stop.lower():
+                    stop_ids_listbox.insert(tk.END, stop)
+
+        stop_search_entry.bind("<KeyRelease>", update_stop_listbox)
+
+        # Apply modifications
+        def process_modifications():
+            selected_routes = [route_ids_listbox.get(i).split(":")[0].strip() for i in route_ids_listbox.curselection()]
+            selected_stops = [stop_ids_listbox.get(i).split(" - ")[0] for i in stop_ids_listbox.curselection()]
             percentage = percentage_entry.get()
 
-            if not selected_route_ids or not percentage:
-                messagebox.showerror("Error", "Please fill all fields.")
+            # Validate percentage
+            if not selected_routes and not selected_stops:
+                messagebox.showerror("Error", "Please select at least one route or stop.")
                 return
 
-            try:
-                percentage = float(percentage)
-                if percentage < 0 or percentage > 100:
-                    raise ValueError("Percentage must be between 0 and 100.")
-            except ValueError as e:
-                messagebox.showerror("Error", f"Invalid input: {e}")
-                return
+            if percentage:
+                try:
+                    percentage = float(percentage)
+                    if percentage < 0 or percentage > 100:
+                        raise ValueError("Percentage must be between 0 and 100.")
+                except ValueError as e:
+                    messagebox.showerror("Error", f"Invalid percentage: {e}")
+                    return
 
-            modified_data = routes_data
+            # Delete selected routes
+            if selected_routes:
+                modified_trips = trips_data
+                for route_id in selected_routes:
+                    modified_trips = self.data_processor.delete_percentage_of_trips_from_route(modified_trips, route_id, percentage)
+                self.file_handler.save_gtfs_data_to_zip(self.gtfs_file, 'trips.txt', modified_trips, trips_fieldnames)
+                messagebox.showinfo("Success", "Selected routes modified.")
 
-            # Track route_ids to remove if 100% of trips are deleted
-            routes_to_remove = []
+            # Delete selected stops
+            if selected_stops:
+                updated_stops = [stop for stop in stops_data if stop['stop_id'] not in selected_stops]
+                self.file_handler.save_gtfs_data_to_zip(self.gtfs_file, 'stops.txt', updated_stops, stops_fieldnames)
+                messagebox.showinfo("Success", "Selected stops deleted.")
 
-            for route_id in selected_route_ids:
-                # Delete percentage of trips for the selected route
-                modified_data = self.data_processor.delete_percentage_of_trips_from_route(modified_data, route_id, percentage)
+            modify_window.destroy()
 
-                # Check if there are remaining trips for this route_id
-                remaining_trips = [row for row in modified_data if row['route_id'] == route_id]
-                trips_by_route[route_id] = remaining_trips
+        tk.Button(modify_window, text="Apply Modifications", command=process_modifications).pack(pady=20)
 
-                # If no remaining trips, mark this route_id for removal
-                if not remaining_trips:
-                    routes_to_remove.append(route_id)
-
-            # Update the trips.txt file with the modified data
-            new_gtfs_filename = self.file_handler.save_gtfs_data_to_zip(self.gtfs_file, 'trips.txt', modified_data, trips_fieldnames)
-            self.output_text.insert(tk.END, f"Modified GTFS saved as {new_gtfs_filename}\n")
-
-            # Remove route_ids that have no trips left in trips.txt from the listbox
-            for route_id in routes_to_remove:
-                all_routes = [route for route in all_routes if not route.startswith(route_id)]
-                route_ids_listbox.delete(0, tk.END)  # Clear the listbox
-                for route in all_routes:
-                    route_ids_listbox.insert(tk.END, route)
-
-        tk.Button(modify_window, text="Apply Modification", command=process_modification).pack(pady=20)
-   
-    
     def generate_synthetic_dataset(self):
         """Open a window for generating the synthetic dataset."""
         synth_window = Toplevel(self.master)
