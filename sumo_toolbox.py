@@ -22,7 +22,7 @@ class SimulationApp:
     def __init__(self, master):
         self.master = master
         master.title("Traffic Simulation Tool")
-        master.geometry("800x800")
+        master.geometry("800x600")
 
         # File and Data Handlers
         self.file_handler = FileHandler()
@@ -789,7 +789,7 @@ class SimulationApp:
 
         modify_window = tk.Toplevel(self.master)
         modify_window.title("Modify OD Matrix")
-        modify_window.geometry("500x700")
+        modify_window.geometry("500x600")
 
         # Radio Buttons to Choose Between Percentage or Value Adjustment
         adjustment_type_var = tk.StringVar(value="percentage")  # Default to percentage
@@ -808,15 +808,25 @@ class SimulationApp:
         tk.Radiobutton(modify_window, text="Add", variable=operation_var, value="add").pack(anchor=tk.W)
         tk.Radiobutton(modify_window, text="Subtract", variable=operation_var, value="subtract").pack(anchor=tk.W)
 
-        # Listbox for selecting origin zones (from_zones)
+        # Frame and Scrollbar for Origin Zones
         tk.Label(modify_window, text="Select Origin Zones (multiple selection):").pack(pady=5)
-        from_zones_listbox = tk.Listbox(modify_window, selectmode=tk.MULTIPLE, height=10, exportselection=0)
-        from_zones_listbox.pack(pady=5)
+        from_zones_frame = tk.Frame(modify_window)
+        from_zones_frame.pack(pady=5, fill=tk.BOTH, expand=True)
+        from_zones_listbox = tk.Listbox(from_zones_frame, selectmode=tk.MULTIPLE, height=6, exportselection=0)
+        from_zones_listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        from_zones_scrollbar = tk.Scrollbar(from_zones_frame, orient=tk.VERTICAL, command=from_zones_listbox.yview)
+        from_zones_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        from_zones_listbox.config(yscrollcommand=from_zones_scrollbar.set)
 
-        # Listbox for selecting destination zones (to_zones)
+        # Frame and Scrollbar for Destination Zones
         tk.Label(modify_window, text="Select Destination Zones (multiple selection):").pack(pady=5)
-        to_zones_listbox = tk.Listbox(modify_window, selectmode=tk.MULTIPLE, height=10, exportselection=0)
-        to_zones_listbox.pack(pady=5)
+        to_zones_frame = tk.Frame(modify_window)
+        to_zones_frame.pack(pady=5, fill=tk.BOTH, expand=True)
+        to_zones_listbox = tk.Listbox(to_zones_frame, selectmode=tk.MULTIPLE, height=6, exportselection=0)
+        to_zones_listbox.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        to_zones_scrollbar = tk.Scrollbar(to_zones_frame, orient=tk.VERTICAL, command=to_zones_listbox.yview)
+        to_zones_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        to_zones_listbox.config(yscrollcommand=to_zones_scrollbar.set)
 
         # Read OD matrix and extract unique zones
         header_lines, od_data = self.file_handler.read_od_matrix(self.od_matrix_file)
@@ -869,7 +879,7 @@ class SimulationApp:
                 # Ask user to save as a new file or overwrite the existing file
                 save_as_new = messagebox.askyesno("Save OD Matrix", "Do you want to save the modified OD matrix as a new file?")
                 if save_as_new:
-                    save_file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text files", "*.txt")])
+                    save_file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("OD Matrix", "*.od")])
                     if save_file_path:
                         self.file_handler.write_od_matrix(save_file_path, header_lines, updated_od_data)
                         self.output_text.insert(tk.END, f"OD Matrix saved as new file: {save_file_path}\n")
@@ -885,6 +895,7 @@ class SimulationApp:
 
         # Button to apply the modification
         tk.Button(modify_window, text="Apply", command=apply_modification).pack(pady=10)
+
     
 class FileHandler:
     def __init__(self):
