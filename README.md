@@ -8,7 +8,7 @@ This tool is designed to enhance traffic simulation workflows in [SUMO](https://
 
 ## Requirements
 
-- **Python**: Version 3.8 or higher
+- **Python**: Version 3.11 or higher
 - **SUMO**: [Simulation of Urban Mobility](https://www.eclipse.org/sumo/)
 
 ## Installation
