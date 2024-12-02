@@ -85,28 +85,23 @@ This script saves the road closure configuration to the specified output_file.
 ### 4. Public Transport Anomaly: Delete a Percentage of Trips in GTFS Files
 This script removes a percentage of trips from the trips.txt file within a GTFS ZIP file based on a route ID.
 
--**Filename**: public_transport_anomaly.py
--**Usage**:
+- **Filename**: public_transport_anomaly.py
+- **Usage**:
  ```bash
 python public_transport_anomaly.py <gtfs_zip> <route_id> <percentage>
  ```
 
--**Example**:
+- **Example**:
  ```bash
 python public_transport_anomaly.py gtfs_data.zip route1 20
  ```
 
--**Parameters**:
+- **Parameters**:
   - <gtfs_zip>: Path to the GTFS ZIP file.
   - <route_id>: Route ID to delete trips from.
   - <percentage>: Percentage of trips to delete (0-100).
 
 This script creates a modified GTFS archive as modified_<gtfs_zip> and deletes the specified percentage of trips for the chosen route ID.
-
-### Usage:
-To use these scripts, please make sure you have Python 3.x installed. Download or clone this repository and run the desired script from the command line as shown in the examples above.
-
-Each script provides an inline Usage message if run with incorrect or no arguments.
 
 ### License:
 This project is licensed under the MIT License.
