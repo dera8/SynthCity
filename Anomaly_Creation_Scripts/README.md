@@ -30,13 +30,13 @@ python modify_od_matrix.py modify-value od_matrix.od output_matrix.od 1:2,3,4:ad
  ```
 
 - **Parameters**:
-  - <od_file>: Path to the OD matrix file.
-  - <output_file>: Path to save the modified OD matrix file.
-  - <from_zone>: Origin zone ID.
-  - <to_zone>: Destination zone ID.
-  - <operation>: add or subtract.
-  - <percentage>: Percentage to add or subtract.
-  - <value>: Value to add or subtract.
+  - `<od_file>`: Path to the OD matrix file.
+  - `<output_file>`: Path to save the modified OD matrix file.
+  - `<from_zone>`: Origin zone ID.
+  - `<to_zone>`: Destination zone ID.
+  - `<operation>`: add or subtract.
+  - `<percentage>`: Percentage to add or subtract.
+  - `<value>`: Value to add or subtract.
 
 This script saves the modified OD matrix as modified_od_matrix.od in the current directory.
 
@@ -53,11 +53,11 @@ python close_roads.py osm.net.xml "road1,road2" 8 17 road_closures.xml
  ```
 
 - **Parameters**:
-  - <network_file>: Path to the network XML file.
-  - <roads_to_close>: Comma-separated list of road IDs to close.
-  - <begin_hour>: Starting hour of closure (0-23).
-  - <end_hour>: Ending hour of closure (0-23).
-  - <output_file>: Output filename for the closure XML.
+  - `<network_file>`: Path to the network XML file.
+  - `<roads_to_close>`: Comma-separated list of road IDs to close.
+  - `<begin_hour>`: Starting hour of closure (0-23).
+  - `<end_hour>`: Ending hour of closure (0-23).
+  - `<output_file>`: Output filename for the closure XML.
 This script saves the road closure configuration to the specified output_file.
 
 ### 3. Public Transport Anomaly: Delete Stops in GTFS Files
@@ -74,9 +74,9 @@ python delete_gtfs_stops.py gtfs_data.zip stop1 stop2
  ```
 
 - **Parameters**:
-  - <gtfs_zip>: Path to the GTFS ZIP file.
-  - <output>: Path to save the modified GTFS ZIP file.
-  - <stops>: Stop_IDs to Delete.
+  - `<gtfs_zip>`: Path to the GTFS ZIP file.
+  - `<output>`: Path to save the modified GTFS ZIP file.
+  - `<stops>`: Stop_IDs to Delete.
 
 This script creates a modified GTFS archive as modified_<gtfs_zip> and deletes the specified percentage of trips for the chosen route ID.
 
@@ -94,10 +94,10 @@ python delete_gtfs_trips.py gtfs.zip FGC-63 20 modified_gtfs.zip
  ```
 
 - **Parameters**:
-  - <gtfs_zip>: Path to the GTFS ZIP file.
-  - <route_id>: Route ID to delete trips from.
-  - <percentage>: Percentage of trips to delete (0-100).
-  - <output>: Path to save the modified OD matrix file.
+  - `<gtfs_zip>`: Path to the GTFS ZIP file.
+  - `<route_id>`: Route ID to delete trips from.
+  - `<percentage>`: Percentage of trips to delete (0-100).
+  - `<output>`: Path to save the modified OD matrix file.
 
 This script creates a modified GTFS archive as modified_<gtfs_zip> and deletes the specified percentage of trips for the chosen route ID.
 
