@@ -8,7 +8,6 @@ A collection of Python scripts for generating datasets for stops, edges, and tri
   - [generate_stops_dataset.py](#generate_stops_datasetpy)
   - [generate_edge_dataset.py](#generate_edge_datasetpy)
   - [generate_trips_dataset.py](#generate_trips_datasetpy)
-- [Usage Examples](#usage-examples)
 - [License](#license)
 
 ---
@@ -101,27 +100,6 @@ This script generates a dataset of trips by filtering and processing data from a
   ```
 
 This will create a file named `trips_dataset.csv` containing filtered trip data for the specified date.
-
----
-
-## Usage Examples
-
-### Running All Scripts
-
-1. **Generate Stops Dataset**:
-   ```bash
-   python generate_stops_dataset.py stop_output.csv gtfs_directory custom_stops.csv 2024-11-12
-   ```
-
-2. **Generate Edge Dataset**:
-   ```bash
-   python generate_edge_dataset.py edges.xml taz.xml edge_dataset.csv 2024-11-12
-   ```
-
-3. **Generate Trips Dataset**:
-   ```bash
-   python generate_trips_dataset.py trips.xml bus,tram 2024-11-12 trips_dataset.csv
-   ```
 
 ---
 
