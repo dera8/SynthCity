@@ -64,22 +64,22 @@ This script saves the adjusted OD matrix as adjusted_od_matrix.od.
 ### 3. Road Closure Management
 This script generates an XML file that specifies road closures based on a time interval.
 
-- **Filename**: road_closure_management.py
+- **Filename**: close_roads.py
 - **Usage**:
  ```bash
-python road_closure_management.py <network_file> <roads_to_close> <begin_hour> <end_hour> <output_file>
+python close_roads.py <network_file> <roads_to_close> <begin_hour> <end_hour> <output_file>
  ```
 - **Example**:
  ```bash
-python road_closure_management.py network.xml "road1,road2" 8 17 road_closures.xml
+python close_roads.py osm.net.xml "road1,road2" 8 17 road_closures.xml
  ```
 
 - **Parameters**:
-<network_file>: Path to the network XML file.
-<roads_to_close>: Comma-separated list of road IDs to close.
-<begin_hour>: Starting hour of closure (0-23).
-<end_hour>: Ending hour of closure (0-23).
-<output_file>: Output filename for the closure XML.
+  - <network_file>: Path to the network XML file.
+  - <roads_to_close>: Comma-separated list of road IDs to close.
+  - <begin_hour>: Starting hour of closure (0-23).
+  - <end_hour>: Ending hour of closure (0-23).
+  - <output_file>: Output filename for the closure XML.
 This script saves the road closure configuration to the specified output_file.
 
 ### 4. Public Transport Anomaly: Delete a Percentage of Trips in GTFS Files
@@ -97,7 +97,7 @@ python public_transport_anomaly.py gtfs_data.zip route1 20
  ```
 
 -**Parameters**:
-  -<gtfs_zip>: Path to the GTFS ZIP file.
+  - <gtfs_zip>: Path to the GTFS ZIP file.
   - <route_id>: Route ID to delete trips from.
   - <percentage>: Percentage of trips to delete (0-100).
 
