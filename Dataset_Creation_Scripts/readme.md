@@ -14,7 +14,7 @@ A collection of Python scripts for generating datasets for stops, edges, and tri
 
 ## Scripts
 
-### generate_od_matrices.py
+### 1. Generate OD Matrices
 This script generates OD matrices in o-format for private or public transport
 
 - **Usage**:
@@ -34,7 +34,7 @@ This script generates OD matrices in o-format for private or public transport
   python generate_od_matrices.py od_data.csv private private ORIG DEST TRIPS
   ```
 
-### generate_stops_dataset.py
+### 2. Generate Stops Dataset
 
 This script generates a stops dataset by merging and processing data from GTFS files, a custom stops file, and stop output data. It includes handling for time corrections and delay calculations.
 
@@ -57,7 +57,7 @@ This will create a file named `stops_dataset_2024_11_12.csv` with the processed 
 
 ---
 
-### generate_edge_dataset.py
+### 3. Generate Edge Dataset
 
 This script generates a dataset of edges by extracting and merging data from an XML edge file and a TAZ (Traffic Analysis Zone) XML file. The output dataset includes information about traffic volume, density, speed, and TAZ zones for each edge.
 
@@ -80,7 +80,7 @@ This will create a file named `edge_dataset.csv` containing edge-related data fo
 
 ---
 
-### generate_trips_dataset.py
+### 4. Generate Trips Dataset
 
 This script generates a dataset of trips by filtering and processing data from an XML file containing trip information. It allows you to specify types of trips and includes start and end times, trip durations, and other relevant metrics.
 
