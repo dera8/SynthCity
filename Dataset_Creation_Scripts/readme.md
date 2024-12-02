@@ -1,9 +1,10 @@
-# Transportation Data Management Scripts
+# OD Matrices and Dataset Creation Scripts
 
 A collection of Python scripts for generating datasets for stops, edges, and trips from GTFS and SUMO files.
 
 ## Table of Contents
 - [Scripts](#scripts)
+  - [generate_od_matrices.py](#generate_od_matricespy)
   - [generate_stops_dataset.py](#generate_stops_datasetpy)
   - [generate_edge_dataset.py](#generate_edge_datasetpy)
   - [generate_trips_dataset.py](#generate_trips_datasetpy)
@@ -13,6 +14,26 @@ A collection of Python scripts for generating datasets for stops, edges, and tri
 ---
 
 ## Scripts
+
+### generate_od_matrices.py
+This script generates OD matrices in o-format for private or public transport
+
+- **Usage**:
+```bash
+  python generate_od_matrices.py [-h] <input_file> <output_prefix {private,public}> <origin_col> <destination_col> <trips_col>
+  ```
+- **Parameters**:
+- `<input_file>`: Path to the input CSV file containing OD data.
+- `<output_prefix>`: Prefix for the output files (e.g., 'private' or 'public').
+- `<{private, public}>`: Type of transport ('private' or 'public').
+- `<origin_col>`: Column name for origin zones in the input CSV.
+- `<destination_col>`: Column name for destination zones in the input CSV.
+- `<trips_col>`: Column name for the number of trips in the input CSV.
+  
+- **Example**:
+  ```bash
+  python generate_od_matrices.py od_data.csv private private ORIG DEST TRIPS
+  ```
 
 ### generate_stops_dataset.py
 
