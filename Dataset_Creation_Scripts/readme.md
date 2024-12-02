@@ -4,10 +4,10 @@ A collection of Python scripts for generating datasets for stops, edges, and tri
 
 ## Table of Contents
 - [Scripts](#scripts)
-  - [generate_od_matrices.py](#generate_od_matricespy)
-  - [generate_stops_dataset.py](#generate_stops_datasetpy)
-  - [generate_edge_dataset.py](#generate_edge_datasetpy)
-  - [generate_trips_dataset.py](#generate_trips_datasetpy)
+  - [1. generate_od_matrices.py](#generate_od_matricespy)
+  - [2. generate_stops_dataset.py](#generate_stops_datasetpy)
+  - [3. generate_edge_dataset.py](#generate_edge_datasetpy)
+  - [4. generate_trips_dataset.py](#generate_trips_datasetpy)
 - [License](#license)
 
 ---
