@@ -85,18 +85,19 @@ This script removes a percentage of trips from the trips.txt file within a GTFS 
 
 - **Usage**:
  ```bash
-python delete_gtfs_trips.py <gtfs_zip> <route_id> <percentage>
+python delete_gtfs_trips.py <gtfs_zip> <route_id> <percentage> <output>
  ```
 
 - **Example**:
  ```bash
-python public_transport_anomaly.py gtfs_data.zip route1 20
+python delete_gtfs_trips.py gtfs.zip FGC-63 20 modified_gtfs.zip
  ```
 
 - **Parameters**:
   - <gtfs_zip>: Path to the GTFS ZIP file.
   - <route_id>: Route ID to delete trips from.
   - <percentage>: Percentage of trips to delete (0-100).
+  - <output>: Path to save the modified OD matrix file.
 
 This script creates a modified GTFS archive as modified_<gtfs_zip> and deletes the specified percentage of trips for the chosen route ID.
 
