@@ -8,7 +8,6 @@ A collection of Python scripts to manage and modify transportation data files, i
   - [2. Adjust OD Matrix by Value](#2-adjust-od-matrix-by-value)
   - [3. Road Closure Management](#3-road-closure-management)
   - [4. Public Transport Anomaly: Delete a Percentage of Trips in GTFS Files](#4-public-transport-anomaly-delete-a-percentage-of-trips-in-gtfs-files)
-- [Usage](#usage)
 - [License](#license)
 
 ---
