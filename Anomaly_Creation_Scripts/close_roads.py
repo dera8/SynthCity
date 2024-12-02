@@ -1,7 +1,7 @@
 import xml.etree.ElementTree as ET
 import xml.dom.minidom as minidom
 from datetime import datetime
-import sys
+import argparse
 import json
 
 
@@ -32,8 +32,7 @@ def parse_edges_from_network_file(network_file):
         return edges_mapping
 
     except Exception as e:
-        print(f"Error parsing network file: {e}")
-        sys.exit(1)
+        raise RuntimeError(f"Error parsing network file: {e}")
 
 
 def road_closure_management(network_file, road_name, begin_hour, end_hour, output_file):
@@ -115,7 +114,39 @@ def generate_json_descriptor(network_file, road_name, begin_hour, end_hour, outp
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 6:
-        print("Usage: python close_roads.py <network_file> <road_name> <begin_hour> <end_hour> <output_file>")
-    else:
-        road_closure_management(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5])
+    parser = argparse.ArgumentParser(
+        description="Generate a road closure XML and JSON descriptor for SUMO simulations.",
+        epilog="Example usage: python close_roads.py osm.net.xml 'Via Giovanni Prà' 8 17 road_closures.xml"
+    )
+
+    parser.add_argument(
+        "network_file",
+        help="Path to the SUMO network file (e.g., osm.net.xml)."
+    )
+    parser.add_argument(
+        "road_name",
+        help="Name of the road to close (e.g., 'Via Giovanni Prà')."
+    )
+    parser.add_argument(
+        "begin_hour",
+        type=int,
+        help="Starting hour of the closure (0-23)."
+    )
+    parser.add_argument(
+        "end_hour",
+        type=int,
+        help="Ending hour of the closure (0-23)."
+    )
+    parser.add_argument(
+        "output_file",
+        help="Name of the output XML file (e.g., road_closures.xml)."
+    )
+
+    args = parser.parse_args()
+    road_closure_management(
+        args.network_file,
+        args.road_name,
+        args.begin_hour,
+        args.end_hour,
+        args.output_file
+    )
