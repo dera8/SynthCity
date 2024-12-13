@@ -4,37 +4,16 @@ A collection of Python scripts for generating datasets for stops, edges, and tri
 
 ## Table of Contents
 - [Scripts](#scripts)
-  - [1. generate_od_matrices.py](#generate_od_matricespy)
-  - [2. generate_stops_dataset.py](#generate_stops_datasetpy)
-  - [3. generate_edge_dataset.py](#generate_edge_datasetpy)
-  - [4. generate_trips_dataset.py](#generate_trips_datasetpy)
+  - [1. generate_stops_dataset.py](#generate_stops_datasetpy)
+  - [2. generate_edge_dataset.py](#generate_edge_datasetpy)
+  - [3. generate_trips_dataset.py](#generate_trips_datasetpy)
 - [License](#license)
 
 ---
 
 ## Scripts
 
-### 1. Generate OD Matrices
-This script generates OD matrices in o-format for private or public transport
-
-- **Usage**:
-```bash
-  python generate_od_matrices.py [-h] <input_file> <output_prefix {private,public}> <origin_col> <destination_col> <trips_col>
-  ```
-- **Parameters**:
-- `<input_file>`: Path to the input CSV file containing OD data.
-- `<output_prefix>`: Prefix for the output files (e.g., 'private' or 'public').
-- `<{private, public}>`: Type of transport ('private' or 'public').
-- `<origin_col>`: Column name for origin zones in the input CSV.
-- `<destination_col>`: Column name for destination zones in the input CSV.
-- `<trips_col>`: Column name for the number of trips in the input CSV.
-  
-- **Example**:
-  ```bash
-  python generate_od_matrices.py od_data.csv private private ORIG DEST TRIPS
-  ```
-
-### 2. Generate Stops Dataset
+### 1. Generate Stops Dataset
 
 This script generates a stops dataset by merging and processing data from GTFS files, a custom stops file, and stop output data. It includes handling for time corrections and delay calculations.
 
@@ -57,7 +36,7 @@ This will create a file named `stops_dataset_2024_11_12.csv` with the processed 
 
 ---
 
-### 3. Generate Edge Dataset
+### 2. Generate Edge Dataset
 
 This script generates a dataset of edges by extracting and merging data from an XML edge file and a TAZ (Traffic Analysis Zone) XML file. The output dataset includes information about traffic volume, density, speed, and TAZ zones for each edge.
 
@@ -80,7 +59,7 @@ This will create a file named `edge_dataset.csv` containing edge-related data fo
 
 ---
 
-### 4. Generate Trips Dataset
+### 3. Generate Trips Dataset
 
 This script generates a dataset of trips by filtering and processing data from an XML file containing trip information. It allows you to specify types of trips and includes start and end times, trip durations, and other relevant metrics.
 
