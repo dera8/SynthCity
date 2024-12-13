@@ -1,4 +1,4 @@
-# SUMO ToolBox
+# SynthCity
 This tool is designed to enhance traffic simulation workflows in [SUMO](https://www.eclipse.org/sumo/) (Simulation of Urban Mobility). It offers a user-friendly interface for managing road closures, rerouting traffic, modifying origin-destination (OD) matrices, and generating synthetic datasets. The tool facilitates the simulation of varied traffic scenarios, making it ideal for traffic flow studies and infrastructure planning.
 
 ## Features
