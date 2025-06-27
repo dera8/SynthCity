@@ -23,19 +23,24 @@
 ```bash
 git clone https://github.com/your-username/SynthCityWeb.git
 cd SynthCityWeb
+```
 
-###  2. Extract the ZIP Archives
+### 2. Extract the ZIP Archives
+
 ```bash
 unzip SynthCityWebServer-main.zip
 unzip SynthCityWeb-main.zip
+```
 
 ### 3. Run the Backend
+
 ```bash
 cd SynthCityWebServer-main
 pip install -r requirements.txt
 uvicorn main:app --reload
 The backend will be available at: http://127.0.0.1:8000
 Interactive API docs (Swagger UI): http://127.0.0.1:8000/docs
+```
 
 ### 4. Run the Frontend
 
@@ -46,7 +51,4 @@ cd SynthCityWeb-main
 npm install
 npm run dev
 The frontend will be available at: http://localhost:3000
-
-Connecting Frontend to Backend
-Make sure the frontend is pointing to the backend URL (http://localhost:8000).
-If needed, edit the .env file or the API base URL in api.js / api.ts in the frontend project.
+```
