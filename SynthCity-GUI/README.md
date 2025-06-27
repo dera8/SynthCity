@@ -45,7 +45,7 @@ In a new terminal:
 cd SynthCityWeb-main
 npm install
 npm run dev
-The frontend will be available at: http://localhost:5173
+The frontend will be available at: http://localhost:3000
 
 Connecting Frontend to Backend
 Make sure the frontend is pointing to the backend URL (http://localhost:8000).
