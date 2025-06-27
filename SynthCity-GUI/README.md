@@ -38,9 +38,10 @@ unzip SynthCityWeb-main.zip
 cd SynthCityWebServer-main
 pip install -r requirements.txt
 uvicorn main:app --reload
+```
+
 The backend will be available at: http://127.0.0.1:8000
 Interactive API docs (Swagger UI): http://127.0.0.1:8000/docs
-```
 
 ### 4. Run the Frontend
 
