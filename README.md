@@ -62,8 +62,9 @@ The resulting dataset includes **millions of multimodal mobility records** and e
 
 - 🧾 **Citation**
 
-If you use SynthCity in your research, please cite:
+If you use **SynthCity** in your research, please cite:
 
+```bibtex
 @article{Russo2025SynthCity,
   author    = {Debora Russo and Franca Rocco di Torrepadula and Luigi Libero Lucio Starace and Sergio Di Martino and Nicola Mazzocca},
   title     = {A Framework for Generating Synthetic Urban Mobility Datasets With Customizable Anomalous Scenarios},
