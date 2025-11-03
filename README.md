@@ -1,11 +1,76 @@
-# SynthCity
-This tool is designed to enhance traffic simulation workflows in [SUMO](https://www.eclipse.org/sumo/) (Simulation of Urban Mobility). It offers a user-friendly interface for managing road closures, rerouting traffic, modifying origin-destination (OD) matrices, and generating synthetic datasets. The tool facilitates the simulation of varied traffic scenarios, making it ideal for traffic flow studies and infrastructure planning.
+# 🏙️ SynthCity: A Framework for Generating Synthetic Urban Mobility Datasets With Customizable Anomalous Scenarios
 
-## Features
-  - **Anomaly Creations**: create anomalies in road infrastructure or traffic flow.
-  - **Synthetic Dataset Generation**: Generate synthetic datasets using selected dates, directories, and customized stop files.
+[![DOI](https://img.shields.io/badge/DOI-10.1109/OJITS.2025.3626948-blue.svg)](https://doi.org/10.1109/OJITS.2025.3626948)
+[![License: CC BY-NC-ND 4.0](https://img.shields.io/badge/License-CC%20BY--NC--ND%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-nd/4.0/)
+[![SUMO](https://img.shields.io/badge/SUMO-v1.19-green.svg)](https://eclipse.dev/sumo/)
+[![Python](https://img.shields.io/badge/Python-3.12+-blue.svg)](https://www.python.org/)
 
-## Requirements
+> Official repository for the paper  
+> **"A Framework for Generating Synthetic Urban Mobility Datasets With Customizable Anomalous Scenarios"**  
+> *IEEE Open Journal of Intelligent Transportation Systems*, January 2025  
+> DOI: [10.1109/OJITS.2025.3626948](https://doi.org/10.1109/OJITS.2025.3626948)
 
-- **Python**: Version 3.11 or higher
-- **SUMO**: [Simulation of Urban Mobility](https://www.eclipse.org/sumo/)
+---
+
+## 📖 Overview
+
+**SynthCity** is an open-source framework that automatically generates **synthetic urban mobility datasets** featuring **customizable anomalous scenarios** — such as strikes, road closures, and sudden changes in travel demand.
+
+Built on [**Eclipse SUMO**](https://eclipse.dev/sumo/), SynthCity integrates open data formats (OpenStreetMap – OSM, GTFS, OD matrices, shapefiles) into a unified architecture for **simulation, dataset generation, and anomaly injection**.
+
+It provides both a **Graphical User Interface (GUI)** and a **Command Line Interface (CLI)**, empowering researchers, practitioners, and urban planners to model realistic *what-if* mobility conditions with minimal effort.
+
+---
+
+## 🧩 Main Features
+
+- 🧠 **Anomaly Injector Module**  
+  Automatically modifies simulation inputs to model:
+  - 🚉 *Public transport disruptions* (strikes, stop closures, trip cancellations)  
+  - 🚧 *Network disruptions* (road closures, detours, accidents)  
+  - 🎫 *Travel demand variations* (event-driven surges or drops)
+
+- 📊 **Synthetic Dataset Generator Module**  
+  Converts SUMO outputs into structured CSV + JSON datasets ready for analysis:
+  - **Public Transport:** stop-level data with occupancy, delay, and service stats  
+  - **Private Vehicles:** trip-level data with duration, route length, and speed  
+  - **Network Edges:** edge-level metrics (density, flow, mean speed)
+
+---
+
+## 🧪 Case Study – Genoa, Italy 🇮🇹
+
+SynthCity was validated using **publicly available open data** from the city of **Genoa**, including:
+
+- 🗺️ **OpenStreetMap network**
+- 🚍 **GTFS data from AMT Genova**
+- 🧮 **Origin–Destination (OD) matrices** from the City of Genoa
+
+Three representative anomalous scenarios were simulated:
+
+1. 🚇 **Metro Strike** — full suspension of subway service  
+2. 🎉 **Special Event** — localized demand surge near the stadium  
+3. 🚧 **Road Closure** — disruption of a major arterial road with dynamic rerouting  
+
+The resulting dataset includes **millions of multimodal mobility records** and exhibits **realistic spatio-temporal patterns**, making it suitable for research in:
+
+- 🧠 AI-based mobility modeling  
+- 🚦 Intelligent Transportation Systems (ITS)  
+- 🏙️ Urban planning and scenario analysis
+
+---
+
+- 🧾 **Citation**
+
+If you use SynthCity in your research, please cite:
+
+@article{Russo2025SynthCity,
+  author    = {Debora Russo and Franca Rocco di Torrepadula and Luigi Libero Lucio Starace and Sergio Di Martino and Nicola Mazzocca},
+  title     = {A Framework for Generating Synthetic Urban Mobility Datasets With Customizable Anomalous Scenarios},
+  journal   = {IEEE Open Journal of Intelligent Transportation Systems},
+  year      = {2025},
+  volume    = {PP},
+  pages     = {1--1},
+  doi       = {10.1109/OJITS.2025.3626948},
+  license   = {CC BY-NC-ND 4.0}
+}
