@@ -14,7 +14,7 @@
 
 ## 📖 Overview
 
-**SynthCity** is an open-source framework that automatically generates **synthetic urban mobility datasets** featuring **customizable anomalous scenarios** — such as strikes, road closures, and sudden changes in travel demand.
+**SynthCity** is an open-source framework that automatically generates **synthetic urban mobility datasets** featuring **customizable anomalous scenarios**, such as strikes, road closures, and sudden changes in travel demand.
 
 Built on [**Eclipse SUMO**](https://eclipse.dev/sumo/), SynthCity integrates open data formats (OpenStreetMap – OSM, GTFS, OD matrices, shapefiles) into a unified architecture for **simulation, dataset generation, and anomaly injection**.
 
