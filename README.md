@@ -66,14 +66,16 @@ Link to the dataset: https://doi.org/10.5281/zenodo.17517746
 
 If you use **SynthCity** in your research, please cite:
 
+D. Russo, F. Rocco Di Torrepadula, L. L. L. Starace, S. Di Martino and N. Mazzocca, "A Framework for Generating Synthetic Urban Mobility Datasets With Customizable Anomalous Scenarios," in IEEE Open Journal of Intelligent Transportation Systems, doi: 10.1109/OJITS.2025.3626948.
+ 
 ```bibtex
 @article{Russo2025SynthCity,
-  author    = {Debora Russo and Franca Rocco di Torrepadula and Luigi Libero Lucio Starace and Sergio Di Martino and Nicola Mazzocca},
-  title     = {A Framework for Generating Synthetic Urban Mobility Datasets With Customizable Anomalous Scenarios},
-  journal   = {IEEE Open Journal of Intelligent Transportation Systems},
-  year      = {2025},
-  volume    = {PP},
-  pages     = {1--1},
-  doi       = {10.1109/OJITS.2025.3626948},
-  license   = {CC BY-NC-ND 4.0}
-}
+  author={Russo, Debora and Rocco Di Torrepadula, Franca and Starace, Luigi Libero Lucio and Di Martino, Sergio and Mazzocca, Nicola},
+  journal={IEEE Open Journal of Intelligent Transportation Systems}, 
+  title={A Framework for Generating Synthetic Urban Mobility Datasets With Customizable Anomalous Scenarios}, 
+  year={2025},
+  pages={1-1},
+  doi={10.1109/OJITS.2025.3626948}
+  }
+
+
