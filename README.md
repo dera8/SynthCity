@@ -89,7 +89,7 @@ SynthCity-main
 │   ├── requirements.txt
 ```
 
-- 🧾 **Citation**
+## 🧾 **Citation**
 
 If you use **SynthCity** in your research, please cite:
 
