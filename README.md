@@ -62,6 +62,32 @@ Link to the dataset: https://doi.org/10.5281/zenodo.17517746
 
 ---
 
+## 📁 Repository Structure
+
+SynthCity-main
+│   ├── 4april_trips.csv
+│   ├── Dataset_definitivo_14aprile_new.zip
+│   ├── edge_april28.zip
+│   ├── README.md
+│   ├── Anomaly_Creation_Scripts
+│   │   ├── README.md
+│   │   ├── close_roads.py
+│   │   ├── delete_gtfs_stops.py
+│   │   ├── modify_gtfs_trips.py
+│   │   ├── modify_od_matrix.py
+│   │   ├── traci_close_road.py
+│   ├── Dataset_Creation_Scripts
+│   │   ├── generate_edge_dataset.py
+│   │   ├── generate_stops_dataset.py
+│   │   ├── generate_trip_dataset.py
+│   │   ├── readme.md
+│   ├── SynthCity-GUI
+│   │   ├── README.md
+│   │   ├── SynthCityWeb-main.zip
+│   │   ├── SynthCityWebServer-main.zip
+│   │   ├── requirements.txt
+
+
 - 🧾 **Citation**
 
 If you use **SynthCity** in your research, please cite:
