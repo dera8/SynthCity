@@ -64,6 +64,7 @@ Link to the dataset: https://doi.org/10.5281/zenodo.17517746
 
 ## 📁 Repository Structure
 
+```
 SynthCity-main
 ├── 4april_trips.csv
 ├── Dataset_definitivo_14aprile_new.zip
@@ -86,7 +87,7 @@ SynthCity-main
 │   ├── SynthCityWeb-main.zip
 │   ├── SynthCityWebServer-main.zip
 │   ├── requirements.txt
-
+```
 
 - 🧾 **Citation**
 
