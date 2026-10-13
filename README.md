@@ -58,7 +58,7 @@ The resulting dataset includes **millions of multimodal mobility records** and e
 - 🚦 Intelligent Transportation Systems (ITS)  
 - 🏙️ Urban planning and scenario analysis
 
-Link to the dataset: https://doi.org/10.5281/zenodo.17517746 
+Link to the dataset: [https://doi.org/10.5281/zenodo.17517746](https://doi.org/10.5281/zenodo.22036684) 
 
 ---
 
